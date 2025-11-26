@@ -6,8 +6,7 @@ public class Transaction {
     private String transactionUUID;
     private PaymentMethods paymentMethods;
 
-    public Transaction(String transactionUUID, PaymentMethods paymentMethods) {
-        this.transactionUUID = transactionUUID;
+    public Transaction(PaymentMethods paymentMethods) {
         this.paymentMethods = paymentMethods;
     }
 

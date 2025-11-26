@@ -9,8 +9,7 @@ public class Movie {
     private String genre;
     private Ratings rating;
 
-    public Movie(String moviesUUID, String title, int duration, String genre, Ratings rating) {
-        this.moviesUUID = moviesUUID;
+    public Movie(String title, int duration, String genre, Ratings rating) {
         this.title = title;
         this.duration = duration;
         this.genre = genre;
