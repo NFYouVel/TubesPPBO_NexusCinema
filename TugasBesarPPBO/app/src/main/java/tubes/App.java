@@ -3,12 +3,11 @@
  */
 package tubes;
 
-public class App {
-    public String getGreeting() {
-        return "Hello Jennie!";
-    }
+import tubes.views.LoginUI;
 
+public class App {
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        LoginUI start = new LoginUI();
+        start.showMenuLogin();
     }
 }
