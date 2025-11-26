@@ -7,8 +7,7 @@ public class Studio {
     private String studioNumber;
     private Types studioType;
 
-    public Studio(String studioUUID, String studioNumber, Types studioType) {
-        this.studioUUID = studioUUID;
+    public Studio(String studioNumber, Types studioType) {
         this.studioNumber = studioNumber;
         this.studioType = studioType;
     }

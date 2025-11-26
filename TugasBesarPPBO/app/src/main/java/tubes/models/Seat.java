@@ -6,8 +6,7 @@ public class Seat {
     private int seatRow;
     private int seatColumn;
     
-    public Seat(String seatsUUID, String seatNumber, int seatRow, int seatColumn) {
-        this.seatsUUID = seatsUUID;
+    public Seat(String seatNumber, int seatRow, int seatColumn) {
         this.seatNumber = seatNumber;
         this.seatRow = seatRow;
         this.seatColumn = seatColumn;

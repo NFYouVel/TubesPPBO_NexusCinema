@@ -8,9 +8,8 @@ public class Staff extends User {
     private String ein; //Employer Identification Number
     private double salary;
 
-    public Staff(String staffUUID, String ein, double salary, String user_UUID, String name, String email, String password, String phone, String tanggalLahir, Genders jenisKelamin, Roles role) {
-        super(user_UUID, name, email, password, phone, tanggalLahir, jenisKelamin, role);
-        this.staffUUID = staffUUID;
+    public Staff(String ein, double salary, String name, String email, String password, String phone, String tanggalLahir, Genders jenisKelamin, Roles role) {
+        super(name, email, password, phone, tanggalLahir, jenisKelamin, role);
         this.ein = ein;
         this.salary = salary;
     }

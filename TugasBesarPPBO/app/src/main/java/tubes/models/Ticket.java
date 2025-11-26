@@ -6,8 +6,7 @@ public class Ticket {
     private String ticketUUID;
     private TicketStatus status;
 
-    public Ticket(String ticketUUID, TicketStatus status) {
-        this.ticketUUID = ticketUUID;
+    public Ticket(TicketStatus status) {
         this.status = status;
     }
 
