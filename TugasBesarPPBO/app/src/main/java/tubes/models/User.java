@@ -3,7 +3,7 @@ package tubes.models;
 import tubes.models.enums.Genders;
 import tubes.models.enums.Roles;
 
-public class Users {
+public class User {
     private String user_UUID;
     private String name;
     private String email;
@@ -13,7 +13,7 @@ public class Users {
     private Genders gender;
     private Roles role;
 
-    public Users(String user_UUID, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
+    public User(String user_UUID, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
         this.user_UUID = user_UUID;
         this.name = name;
         this.email = email;
