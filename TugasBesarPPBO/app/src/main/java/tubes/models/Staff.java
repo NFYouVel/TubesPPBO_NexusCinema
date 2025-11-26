@@ -3,7 +3,7 @@ package tubes.models;
 import tubes.models.enums.Genders;
 import tubes.models.enums.Roles;
 
-public class Staff extends Users {
+public class Staff extends User {
     private String staffUUID;
     private String ein; //Employer Identification Number
     private double salary;
