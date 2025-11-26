@@ -5,8 +5,7 @@ public class Showtime {
     private String showtimeDateTime;
     private String price;
     
-    public Showtime(String showtimeUUID, String showtimeDateTime, String price) {
-        this.showtimeUUID = showtimeUUID;
+    public Showtime(String showtimeDateTime, String price) {
         this.showtimeDateTime = showtimeDateTime;
         this.price = price;
     }
