@@ -13,8 +13,7 @@ public class User {
     private Genders gender;
     private Roles role;
 
-    public User(String userUUID, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
-        this.userUUID = userUUID;
+    public User(String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
         this.name = name;
         this.email = email;
         this.password = password;

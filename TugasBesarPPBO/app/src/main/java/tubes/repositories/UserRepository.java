@@ -49,9 +49,11 @@ public class UserRepository {
 
             if(role.equals(Roles.CUSTOMER)){
                 Membership membership = Membership.valueOf(rs.getString("membership"));
-                return new Customer(rs.getString("customer_UUID"), membership, rs.getInt("point"), rs.getString("user_UUID"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("tanggalLahir"), gender, role);
+                Customer customer = new Customer(membership, rs.getInt("point"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender);
+                customer.setCustomerUUID(rs.getString("customer_UUID"));
+                return customer;
             }else{
-                return new Staff(rs.getString("staff_UUID"), rs.getString("ein"), rs.getDouble("salary"), rs.getString("user_UUID"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("tanggalLahir"), gender, role);
+                return new Staff(rs.getString("ein"), rs.getDouble("salary"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender, role);
             }
             
         } catch (SQLException e) {

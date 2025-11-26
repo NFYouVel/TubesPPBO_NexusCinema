@@ -9,9 +9,8 @@ public class Customer extends User {
     private Membership membership;
     private int point;
 
-    public Customer(String customerUUID, Membership membership, int point, String user_UUID, String name, String email, String password, String phone, String tanggalLahir, Genders jenisKelamin, Roles role) {
-        super(user_UUID, name, email, password, phone, tanggalLahir, jenisKelamin, role);
-        this.customerUUID = customerUUID;
+    public Customer(Membership membership, int point, String name, String email, String password, String phone, String tanggalLahir, Genders jenisKelamin) {
+        super(name, email, password, phone, tanggalLahir, jenisKelamin, Roles.CUSTOMER);
         this.membership = membership;
         this.point = point;
     }
