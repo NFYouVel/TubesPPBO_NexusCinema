@@ -3,8 +3,8 @@ package tubes.models;
 import tubes.models.enums.Genders;
 import tubes.models.enums.Roles;
 
-public class Users {
-    private String user_UUID;
+public class User {
+    private String userUUID;
     private String name;
     private String email;
     private String password;
@@ -13,8 +13,8 @@ public class Users {
     private Genders gender;
     private Roles role;
 
-    public Users(String user_UUID, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
-        this.user_UUID = user_UUID;
+    public User(String userUUID, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
+        this.userUUID = userUUID;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -23,12 +23,12 @@ public class Users {
         this.role = role;
     }
 
-    public String getUser_UUID() {
-        return this.user_UUID;
+    public String getUserUUID() {
+        return this.userUUID;
     }
 
-    public void setUser_UUID(String user_UUID) {
-        this.user_UUID = user_UUID;
+    public void setUserUUID(String userUUID) {
+        this.userUUID = userUUID;
     }
 
     public String getName() {
@@ -63,11 +63,11 @@ public class Users {
         this.phone = phone;
     }
 
-    public String getdob() {
+    public String getDob() {
         return this.dob;
     }
 
-    public void setdob(String dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 

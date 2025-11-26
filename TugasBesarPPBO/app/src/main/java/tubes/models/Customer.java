@@ -4,7 +4,7 @@ import tubes.models.enums.Genders;
 import tubes.models.enums.Membership;
 import tubes.models.enums.Roles;
 
-public class Customer extends Users {
+public class Customer extends User {
     private String customerUUID;
     private Membership membership;
     private int point;
