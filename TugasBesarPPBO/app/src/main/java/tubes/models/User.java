@@ -3,7 +3,7 @@ package tubes.models;
 import tubes.models.enums.Genders;
 import tubes.models.enums.Roles;
 
-public class User {
+public abstract class User {
     private String userUUID;
     private String name;
     private String email;
