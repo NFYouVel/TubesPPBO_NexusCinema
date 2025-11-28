@@ -12,5 +12,6 @@ public class App {
         start.showMenuLogin();
 
         CustomerView test = new CustomerView();
+        test.showMoviesList();
     }
 }
