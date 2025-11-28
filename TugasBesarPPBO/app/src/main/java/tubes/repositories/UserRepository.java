@@ -49,7 +49,7 @@ public class UserRepository {
 
             if(role.equals(Roles.CUSTOMER)){
                 Membership membership = Membership.valueOf(rs.getString("membership"));
-                Customer customer = new Customer(membership, rs.getInt("point"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender);
+                Customer customer = new Customer(membership, rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender);
                 customer.setCustomerUUID(rs.getString("customer_UUID"));
                 return customer;
             }else{
@@ -73,7 +73,7 @@ public class UserRepository {
         pstmt.setString(4, user.getPassword());
         pstmt.setString(5, user.getPhone());
         pstmt.setString(6, user.getDob());
-        pstmt.setString(7, user.getgender().toString());
+        pstmt.setString(7, user.getGender().toString());
         pstmt.setString(8, user.getRole().toString());
         pstmt.executeUpdate();
         
