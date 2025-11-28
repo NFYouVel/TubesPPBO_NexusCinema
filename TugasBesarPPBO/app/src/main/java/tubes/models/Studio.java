@@ -1,13 +1,13 @@
 package tubes.models;
 
-import java.sql.Types;
+import tubes.models.enums.MovieTypes;
 
 public class Studio {
     private String studioUUID;
     private String studioNumber;
-    private Types studioType;
+    private MovieTypes studioType;
 
-    public Studio(String studioNumber, Types studioType) {
+    public Studio(String studioNumber, MovieTypes studioType) {
         this.studioNumber = studioNumber;
         this.studioType = studioType;
     }
@@ -28,11 +28,11 @@ public class Studio {
         this.studioNumber = studioNumber;
     }
 
-    public Types getStudioType() {
+    public MovieTypes getStudioType() {
         return this.studioType;
     }
 
-    public void setStudioType(Types studioType) {
+    public void setStudioType(MovieTypes studioType) {
         this.studioType = studioType;
     }
 }
