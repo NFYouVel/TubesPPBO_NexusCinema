@@ -19,6 +19,7 @@ public abstract class User {
         this.password = password;
         this.phone = phone;
         this.dob = dob;
+        this.gender = gender;
         this.role = role;
     }
 
@@ -70,11 +71,11 @@ public abstract class User {
         this.dob = dob;
     }
 
-    public Genders getgender() {
+    public Genders getGender() {
         return this.gender;
     }
 
-    public void setgender(Genders gender) {
+    public void setGender(Genders gender) {
         this.gender = gender;
     }
 

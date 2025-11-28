@@ -8,8 +8,8 @@ public class Staff extends User {
     private String ein; //Employer Identification Number
     private double salary;
 
-    public Staff(String ein, double salary, String name, String email, String password, String phone, String tanggalLahir, Genders jenisKelamin, Roles role) {
-        super(name, email, password, phone, tanggalLahir, jenisKelamin, role);
+    public Staff(String ein, double salary, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
+        super(name, email, password, phone, dob, gender, role);
         this.ein = ein;
         this.salary = salary;
     }
