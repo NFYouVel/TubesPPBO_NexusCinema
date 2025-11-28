@@ -13,6 +13,7 @@ import tubes.models.enums.Membership;
 import tubes.models.enums.Roles;
 import tubes.models.execptions.LoginFailedException;
 import tubes.utils.Database;
+import tubes.utils.UtilUUIDGenerator;
 
 public class UserRepository {
     private static final Connection conn;
@@ -24,8 +25,9 @@ public class UserRepository {
     // Login
     public User getUser(String email) throws LoginFailedException {
         Roles role = null;
-        String sqlRole = "SELECT u.* FROM users WHERE u.email = ? AND u.deletedAt IS NULL";
-        String sql = "SELECT u.*, s.* FROM users u INNER JOIN staff s ON u.user_UUID = s.user_UUID WHERE u.deletedAt IS NULL AND u.email = ?";
+        String sqlRole = "SELECT u.* FROM users u WHERE u.email = ? AND u.deleted_at IS NULL";
+        String sqlStaff = "SELECT u.*, s.* FROM users u INNER JOIN staff s ON u.user_UUID = s.user_UUID WHERE u.deleted_at IS NULL AND u.email = ?";
+        String sqlCustomer = "SELECT u.*, c.* FROM users u INNER JOIN customer c ON u.user_UUID = c.user_UUID WHERE u.deleted_at IS NULL AND u.email = ?";
         try{
             PreparedStatement pstmtRole = conn.prepareStatement(sqlRole);
             pstmtRole.setString(1, email);
@@ -36,24 +38,35 @@ public class UserRepository {
             }
 
             role = Roles.valueOf(rsRole.getString("role"));
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, email);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (!rs.next()) {
-                throw new LoginFailedException("User with email '" + email + "' not found.");
-            }
+            Genders gender = Genders.valueOf(rsRole.getString("gender"));
             
-            Genders gender = Genders.valueOf(rs.getString("gender"));
-
             if(role.equals(Roles.CUSTOMER)){
+                PreparedStatement pstmt = conn.prepareStatement(sqlCustomer);
+                pstmt.setString(1, email);
+                ResultSet rs = pstmt.executeQuery();
+    
+                if (!rs.next()) {
+                    throw new LoginFailedException("Customer with email '" + email + "' not found.");
+                }
+
                 Membership membership = Membership.valueOf(rs.getString("membership"));
-                Customer customer = new Customer(membership, rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender);
-                customer.setCustomerUUID(rs.getString("customer_UUID"));
+                Customer customer = new Customer(rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender);
+                customer.setCustomerUUID(rs.getString("cust_UUID"));
+                customer.setPoint(rs.getInt("point"));
+                customer.setMembership(membership);
                 return customer;
             }else{
-                return new Staff(rs.getString("ein"), rs.getDouble("salary"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender, role);
+                PreparedStatement pstmt = conn.prepareStatement(sqlStaff);
+                pstmt.setString(1, email);
+                ResultSet rs = pstmt.executeQuery();
+
+                if (!rs.next()) {
+                    throw new LoginFailedException("Staff with email '" + email + "' not found.");
+                }
+
+                Staff staff = new Staff(rs.getString("ein"), rs.getDouble("salary"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("date_of_birth"), gender, role);
+                staff.setStaffUUID(rs.getString("staff_UUID"));
+                return staff;
             }
             
         } catch (SQLException e) {
@@ -62,12 +75,14 @@ public class UserRepository {
         return null;
     }
 
-    // Sign Up
+    // Sign Up Customer
     public void insertUser(User user) {
-        String sql = "INSERT INTO users (user_UUID, name, email, password, phone, tanggalLahir, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (user_UUID, name, email, password, phone, date_of_birth, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String userUUID = UtilUUIDGenerator.generateUUID();
+        String customerUUID = UtilUUIDGenerator.generateUUID();
         try{
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, user.getUserUUID());
+        pstmt.setString(1, userUUID);
         pstmt.setString(2, user.getName());
         pstmt.setString(3, user.getEmail());
         pstmt.setString(4, user.getPassword());
@@ -77,23 +92,42 @@ public class UserRepository {
         pstmt.setString(8, user.getRole().toString());
         pstmt.executeUpdate();
         
-        if(user.getRole().equals(Roles.CUSTOMER)){
-            String sqlCustomer = "INSERT INTO customers (customer_UUID, point, user_UUID) VALUES (?, ?, ?)";
-            PreparedStatement pstmtCustomer = conn.prepareStatement(sqlCustomer);
-            pstmtCustomer.setString(1, user.getUserUUID());
-            pstmtCustomer.setInt(2, 0);
-            pstmtCustomer.setString(3, user.getUserUUID());
-            pstmtCustomer.executeUpdate();
-        }else{
-            String sqlStaff = "INSERT INTO staff (staff_UUID, ein, salary, user_UUID) VALUES (?, ?, ?, ?)";
-            PreparedStatement pstmtStaff = conn.prepareStatement(sqlStaff);
-            pstmtStaff.setString(1, user.getUserUUID());
-            pstmtStaff.setString(2, null);
-            pstmtStaff.setDouble(3, 0);
-            pstmtStaff.setString(4, user.getUserUUID());
-            pstmtStaff.executeUpdate();
+        String sqlCustomer = "INSERT INTO customer (cust_UUID, user_UUID, point, membership) VALUES (?, ?, ?, ?)";
+        PreparedStatement pstmtCustomer = conn.prepareStatement(sqlCustomer);
+        pstmtCustomer.setString(1, customerUUID);
+        pstmtCustomer.setString(2, userUUID);
+        pstmtCustomer.setInt(3, 0);
+        pstmtCustomer.setString(4, Membership.REGULAR.toString());
+        pstmtCustomer.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    // Sign Up Staff
+    public void insertUser(User user, String ein, double salary) {
+        String sql = "INSERT INTO users (user_UUID, name, email, password, phone, date_of_birth, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String userUUID = UtilUUIDGenerator.generateUUID();
+        String staffUUID = UtilUUIDGenerator.generateUUID();
+        try{
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, userUUID);
+        pstmt.setString(2, user.getName());
+        pstmt.setString(3, user.getEmail());
+        pstmt.setString(4, user.getPassword());
+        pstmt.setString(5, user.getPhone());
+        pstmt.setString(6, user.getDob());
+        pstmt.setString(7, user.getGender().toString());
+        pstmt.setString(8, user.getRole().toString());
+        pstmt.executeUpdate();
         
+        String sqlStaff = "INSERT INTO staff (staff_UUID, ein, salary, user_UUID) VALUES (?, ?, ?, ?)";
+        PreparedStatement pstmtStaff = conn.prepareStatement(sqlStaff);
+        pstmtStaff.setString(1, staffUUID);
+        pstmtStaff.setString(2, ein);
+        pstmtStaff.setDouble(3, salary);
+        pstmtStaff.setString(4, userUUID);
+        pstmtStaff.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -9,9 +9,9 @@ public class Customer extends User {
     private Membership membership;
     private int point;
 
-    public Customer(Membership membership, String name, String email, String password, String phone, String dob, Genders gender) {
+    public Customer(String name, String email, String password, String phone, String dob, Genders gender) {
         super(name, email, password, phone, dob, gender, Roles.CUSTOMER);
-        this.membership = membership;
+        this.membership = Membership.REGULAR;
         this.point = 0;
     }
 
@@ -37,5 +37,10 @@ public class Customer extends User {
 
     public void setPoint(int point) {
         this.point = point;
+    }
+
+    @Override
+    public String getUserUUID() {
+        return this.customerUUID;
     }
 }
