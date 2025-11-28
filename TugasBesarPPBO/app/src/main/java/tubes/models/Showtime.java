@@ -1,11 +1,13 @@
 package tubes.models;
 
-public class Showtime {
+public class ShowTime {
     private String showtimeUUID;
+    private Movie movie;
+    private Studio studio;
     private String showtimeDateTime;
-    private String price;
+    private int price;
     
-    public Showtime(String showtimeDateTime, String price) {
+    public ShowTime(String showtimeDateTime, int price) {
         this.showtimeDateTime = showtimeDateTime;
         this.price = price;
     }
@@ -26,11 +28,26 @@ public class Showtime {
         this.showtimeDateTime = showtimeDateTime;
     }
     
-    public String getPrice() {
+    public int getPrice() {
         return this.price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
+    }
+    public Movie getMovie() {
+        return this.movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+    
+    public Studio getStudio() {
+        return this.studio;
+    }
+
+    public void setStudio(Studio studio) {
+        this.studio = studio;
     }
 }
