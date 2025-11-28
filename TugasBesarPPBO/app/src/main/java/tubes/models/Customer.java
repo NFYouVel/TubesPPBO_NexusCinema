@@ -9,10 +9,10 @@ public class Customer extends User {
     private Membership membership;
     private int point;
 
-    public Customer(Membership membership, int point, String name, String email, String password, String phone, String tanggalLahir, Genders jenisKelamin) {
-        super(name, email, password, phone, tanggalLahir, jenisKelamin, Roles.CUSTOMER);
+    public Customer(Membership membership, String name, String email, String password, String phone, String dob, Genders gender) {
+        super(name, email, password, phone, dob, gender, Roles.CUSTOMER);
         this.membership = membership;
-        this.point = point;
+        this.point = 0;
     }
 
     public String getCustomerUUID() {
