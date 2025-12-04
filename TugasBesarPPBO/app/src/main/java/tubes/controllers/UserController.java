@@ -1,10 +1,11 @@
 package tubes.controllers;
 
-import tubes.models.enums.Roles;
-import tubes.models.exception.LoginFailedException;
 import tubes.repositories.UserRepository;
+import tubes.utils.UtilGlobal;
 import tubes.utils.UtilHashing;
+
 import tubes.models.User;
+import tubes.models.exceptions.LoginFailedException;
 
 public class UserController {
     private UserRepository userRepository;
@@ -13,20 +14,28 @@ public class UserController {
         this.userRepository = new UserRepository();
     }
 
-    public Roles loginVerification(String email, String password) throws LoginFailedException {
+    public User loginVerification(String email, String password) throws LoginFailedException {
         User user = this.userRepository.getUser(email);
         
-        if (UtilHashing.verifyPassword(password, email, password) == false) {
+        if (UtilHashing.verifyPassword(password, user.getPassword()) == false) {
             throw new LoginFailedException("Wrong Password for email '" + email + "'.");
         }
 
-        if (user.getEmail().equals(email)) {
-            String salt = UtilHashing.generateSalt();
-            if (UtilHashing.verifyPassword(password, salt, user.getPassword())) {
-                return user.getRole();
-            }
+        if (user.getEmail().equals(email) && UtilHashing.verifyPassword(password, user.getPassword())) {
+            UtilGlobal.setGlobalUUID(user.getUserUUID());
+            UtilGlobal.setRole(user.getRole());
+            return user;
         }
         
         return null;
+    }
+    public void signupCustomer(User user) {
+        user.setPassword(UtilHashing.hashPassword(user.getPassword()));
+        this.userRepository.insertUser(user);
+    }
+
+    public void signupStaff(User user, String ein, double salary) {
+        user.setPassword(UtilHashing.hashPassword(user.getPassword()));
+        this.userRepository.insertUser(user, ein, salary);
     }
 }

@@ -37,4 +37,9 @@ public class Staff extends User {
     public void setSalary(double salary) {
         this.salary = salary;
     }
+
+    @Override
+    public String getUserUUID() {
+        return this.staffUUID;
+    }
 }
