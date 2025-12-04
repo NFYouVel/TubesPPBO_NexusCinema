@@ -1,13 +1,11 @@
 package tubes.controllers;
 
-import tubes.models.execptions.LoginFailedException;
 import tubes.repositories.UserRepository;
 import tubes.utils.UtilGlobal;
 import tubes.utils.UtilHashing;
 
-import com.mysql.cj.util.Util;
-
 import tubes.models.User;
+import tubes.models.exceptions.LoginFailedException;
 
 public class UserController {
     private UserRepository userRepository;

@@ -4,11 +4,11 @@
 package tubes;
 
 import tubes.views.CustomerView;
-import tubes.views.LoginUI;
+import tubes.views.UserView;
 
 public class App {
     public static void main(String[] args) {
-        LoginUI start = new LoginUI();
+        UserView start = new UserView();
         start.showMenuLogin();
 
         CustomerView test = new CustomerView();

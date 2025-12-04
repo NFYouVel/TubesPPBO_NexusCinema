@@ -24,9 +24,9 @@ public class SignupUI extends JFrame {
     private JButton registerButton;
     private JButton cancelButton;
 
-    private LoginUI loginUI;
+    private UserView loginUI;
 
-    public SignupUI(LoginUI loginUI) {
+    public SignupUI(UserView loginUI) {
         super("Signup Form");
         this.loginUI = loginUI;
         userController = new UserController();
