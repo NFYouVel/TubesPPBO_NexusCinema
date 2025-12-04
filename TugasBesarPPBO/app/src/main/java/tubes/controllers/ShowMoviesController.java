@@ -3,7 +3,7 @@ package tubes.controllers;
 import java.util.List;
 
 import tubes.models.ShowTime;
-import tubes.models.exception.EmptyListRepository;
+import tubes.models.exceptions.EmptyListRepository;
 import tubes.repositories.ShowMoviesRepository;
 
 public class ShowMoviesController {

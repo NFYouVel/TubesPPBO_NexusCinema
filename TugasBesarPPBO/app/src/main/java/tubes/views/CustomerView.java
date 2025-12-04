@@ -8,7 +8,7 @@ import javax.swing.*;
 
 import tubes.controllers.ShowMoviesController;
 import tubes.models.ShowTime;
-import tubes.models.exception.EmptyListRepository;
+import tubes.models.exceptions.EmptyListRepository;
 import tubes.utils.UtilJavaSwing;
 
 public class CustomerView {

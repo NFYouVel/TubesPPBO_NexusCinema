@@ -11,7 +11,7 @@ import tubes.models.User;
 import tubes.models.enums.Genders;
 import tubes.models.enums.Membership;
 import tubes.models.enums.Roles;
-import tubes.models.exception.LoginFailedException;
+import tubes.models.exceptions.LoginFailedException;
 import tubes.utils.Database;
 
 public class UserRepository {

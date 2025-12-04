@@ -12,8 +12,8 @@ import tubes.models.Movie;
 import tubes.models.ShowTime;
 import tubes.models.Studio;
 import tubes.models.enums.Ratings;
+import tubes.models.exceptions.EmptyListRepository;
 import tubes.models.enums.MovieTypes;
-import tubes.models.exception.EmptyListRepository;
 import tubes.utils.Database;
 
 public class ShowMoviesRepository {
