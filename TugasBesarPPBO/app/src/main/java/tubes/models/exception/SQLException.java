@@ -1,4 +1,4 @@
-package tubes.models.execptions;
+package tubes.models.exception;
 
 public class SQLException extends Exception{
     public SQLException(String message) {
