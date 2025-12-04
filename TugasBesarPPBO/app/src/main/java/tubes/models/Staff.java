@@ -8,10 +8,10 @@ public class Staff extends User {
     private String ein; //Employer Identification Number
     private double salary;
 
-    public Staff(String ein, double salary, String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
+    public Staff(String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
         super(name, email, password, phone, dob, gender, role);
-        this.ein = ein;
-        this.salary = salary;
+        this.ein = "00000";
+        this.salary = 0;
     }
     
     public String getStaffUUID() {
@@ -22,11 +22,11 @@ public class Staff extends User {
         this.staffUUID = staffUUID;
     }
 
-    public String getein() {
+    public String getEin() {
         return this.ein;
     }
 
-    public void setein(String ein) {
+    public void setEin(String ein) {
         this.ein = ein;
     }
 

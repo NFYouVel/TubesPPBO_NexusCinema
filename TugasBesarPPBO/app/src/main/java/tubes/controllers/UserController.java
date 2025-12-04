@@ -5,6 +5,7 @@ import tubes.utils.UtilGlobal;
 import tubes.utils.UtilHashing;
 
 import tubes.models.User;
+import tubes.models.enums.Roles;
 import tubes.models.exceptions.LoginFailedException;
 
 public class UserController {
@@ -16,7 +17,7 @@ public class UserController {
 
     public User loginVerification(String email, String password) throws LoginFailedException {
         User user = this.userRepository.getUser(email);
-        
+
         if (UtilHashing.verifyPassword(password, user.getPassword()) == false) {
             throw new LoginFailedException("Wrong Password for email '" + email + "'.");
         }
@@ -26,16 +27,22 @@ public class UserController {
             UtilGlobal.setRole(user.getRole());
             return user;
         }
-        
+
         return null;
     }
-    public void signupCustomer(User user) {
-        user.setPassword(UtilHashing.hashPassword(user.getPassword()));
-        this.userRepository.insertUser(user);
-    }
 
-    public void signupStaff(User user, String ein, double salary) {
+    public void signupUser(User user) {
         user.setPassword(UtilHashing.hashPassword(user.getPassword()));
-        this.userRepository.insertUser(user, ein, salary);
+        if (user.getRole() != Roles.CUSTOMER) {
+            double salary = 0;
+            if (user.getRole() == Roles.STAFF) {
+                salary = 4500000;
+            } else if (user.getRole() == Roles.MANAGER) {
+                salary = 6000000;
+            }
+            this.userRepository.insertUser(user, salary);
+        }else{
+            this.userRepository.insertUser(user);
+        }
     }
 }
