@@ -23,13 +23,7 @@ public abstract class User {
         this.role = role;
     }
 
-    public String getUserUUID() {
-        return this.userUUID;
-    }
-
-    public void setUserUUID(String userUUID) {
-        this.userUUID = userUUID;
-    }
+    public abstract String getUserUUID();
 
     public String getName() {
         return this.name;
