@@ -64,7 +64,7 @@ public class SignupUI extends JFrame {
         dobSpinner.setEditor(new JSpinner.DateEditor(dobSpinner, "yyyy-MM-dd"));
 
         JLabel genderLabel = new JLabel("Gender:");
-        genderCombo = new JComboBox<>(new String[] { "PRIA", "WANITA" });
+    genderCombo = new JComboBox<>(new String[]{Genders.PRIA.toString(), Genders.WANITA.toString()});
 
         registerButton = new JButton("Register");
         registerButton.setFont(inputFont);
