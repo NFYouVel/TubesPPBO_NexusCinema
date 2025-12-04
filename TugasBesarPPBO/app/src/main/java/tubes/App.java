@@ -8,10 +8,10 @@ import tubes.views.UserView;
 
 public class App {
     public static void main(String[] args) {
-        UserView start = new UserView();
-        start.showMenuLogin();
+        // UserView start = new UserView();
+        // start.showMenuLogin();
 
-        CustomerView test = new CustomerView(true);
+        CustomerView test = new CustomerView(false);
         test.startCustomerView();
     }
 }

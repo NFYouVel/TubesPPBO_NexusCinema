@@ -182,64 +182,62 @@ public class CustomerView {
         moviesCards.setOpaque(false);
         moviesCards.setLayout(new BoxLayout(moviesCards, BoxLayout.X_AXIS));
 
-        
-        if (isImages) {
-            for (ShowTime showTime : showTimes) {
+        for (ShowTime showTime : showTimes) {
 
-                // CARD WRAPPER
-                JPanel movieCard = new JPanel();
-                movieCard.setOpaque(false);
-                movieCard.setLayout(new BorderLayout());
-                movieCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            // CARD WRAPPER
+            JPanel movieCard = new JPanel();
+            movieCard.setOpaque(false);
+            movieCard.setLayout(new BorderLayout());
+            movieCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-                // IMAGE
+            // IMAGE
+            if (isImages) {
                 JLabel iconMovie = getMovieIconLabel(showTime.getMovie().getTitle());
                 movieCard.add(iconMovie, BorderLayout.NORTH);
-
-                // DETAILS PANEL
-                JPanel detailsMovie = new JPanel();
-                detailsMovie.setOpaque(false);
-                detailsMovie.setLayout(new BoxLayout(detailsMovie, BoxLayout.Y_AXIS));
-                detailsMovie.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-
-                JLabel title = new JLabel(showTime.getMovie().getTitle());
-                title.setFont(new Font("Arial", Font.BOLD, 24));
-
-                JLabel studio = new JLabel("Studio: " + showTime.getStudio().getStudioType());
-                studio.setFont(new Font("Arial", Font.BOLD, 16));
-                JLabel duration = new JLabel("Duration: " + showTime.getMovie().getDuration() + " mins");
-                duration.setFont(new Font("Arial", Font.BOLD, 16));
-
-                detailsMovie.add(title);
-                detailsMovie.add(studio);
-                detailsMovie.add(duration);
-
-                movieCard.add(detailsMovie, BorderLayout.CENTER);
-
-                // BUTTON
-                JButton btn = UtilJavaSwing.generateButton("Order Ticket");
-                btn.putClientProperty("movies_UUID", showTime.getMovie().getMoviesUUID());
-                btn.setPreferredSize(new Dimension(150, 40));
-
-                btn.addActionListener(e -> {
-                    JButton clickedBtn = (JButton) e.getSource();
-                    String movies_UUID = (String) clickedBtn.getClientProperty("movies_UUID");
-
-                    handleOrderTicketButton(movies_UUID);
-                });
-
-                orderButtons.add(btn);
-
-                JPanel btnPanel = new JPanel();
-                btnPanel.setOpaque(false);
-                btnPanel.add(btn);
-
-                movieCard.add(btnPanel, BorderLayout.SOUTH);
-
-                // ADD CARD TO PAGE
-                moviesCards.add(movieCard);
             }
+            
+            // DETAILS PANEL
+            JPanel detailsMovie = new JPanel();
+            detailsMovie.setOpaque(false);
+            detailsMovie.setLayout(new BoxLayout(detailsMovie, BoxLayout.Y_AXIS));
+            detailsMovie.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 
+            JLabel title = new JLabel(showTime.getMovie().getTitle());
+            title.setFont(new Font("Arial", Font.BOLD, 24));
+
+            JLabel studio = new JLabel("Studio: " + showTime.getStudio().getStudioType());
+            studio.setFont(new Font("Arial", Font.BOLD, 16));
+            JLabel duration = new JLabel("Duration: " + showTime.getMovie().getDuration() + " mins");
+            duration.setFont(new Font("Arial", Font.BOLD, 16));
+
+            detailsMovie.add(title);
+            detailsMovie.add(studio);
+            detailsMovie.add(duration);
+
+            movieCard.add(detailsMovie, BorderLayout.CENTER);
+
+            // BUTTON
+            JButton btn = UtilJavaSwing.generateButton("Order Ticket");
+            btn.putClientProperty("movies_UUID", showTime.getMovie().getMoviesUUID());
+            btn.setPreferredSize(new Dimension(150, 40));
+
+            btn.addActionListener(e -> {
+                JButton clickedBtn = (JButton) e.getSource();
+                String movies_UUID = (String) clickedBtn.getClientProperty("movies_UUID");
+
+                handleOrderTicketButton(movies_UUID);
+            });
+
+            orderButtons.add(btn);
+
+            JPanel btnPanel = new JPanel();
+            btnPanel.setOpaque(false);
+            btnPanel.add(btn);
+
+            movieCard.add(btnPanel, BorderLayout.SOUTH);
+
+            // ADD CARD TO PAGE
+            moviesCards.add(movieCard);
         }
 
         showNowPage = new JScrollPane(moviesCards);
