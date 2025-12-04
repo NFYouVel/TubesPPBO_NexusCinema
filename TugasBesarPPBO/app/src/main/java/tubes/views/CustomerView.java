@@ -1,130 +1,270 @@
 package tubes.views;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
 import tubes.controllers.ShowMoviesController;
 import tubes.models.ShowTime;
+import tubes.models.exception.EmptyListRepository;
+import tubes.utils.UtilJavaSwing;
 
 public class CustomerView {
 
-    //Controller
+    // Controller
     private ShowMoviesController showMoviesController;
+    private List<ShowTime> showTimes;
+    private boolean isImages;
 
-    // GUI
+    // GUI Java Swing 
     private JFrame frame;
+    private CardLayout cardLayout;
+    private BackgroundPanel backgroundCustomer;
+    // Main Panel
+    private JPanel navbarContent;
+    private JPanel mainContent;
+    // Navbar Content
+    private JButton showNowButton;
 
-    // Panel
-    private JPanel navigationDiv;
-    private JPanel contentShowMoviesDiv;
+    // Pages
+    private JScrollPane showNowPage;
+    private JPanel defaultPage;
+    private JPanel orderPage;
+    private List<JButton> orderButtons;
 
-    // Input Type
-    private JButton showMoviesButton;
-    private JButton orderTicketButton;
-
-    public CustomerView() {
+    public CustomerView(boolean isImages) {
+        frame = UtilJavaSwing.generateFrame("Customer View", 1024, 700);
+        orderButtons = new ArrayList<>();
         showMoviesController = new ShowMoviesController();
-        this.frame = new JFrame();
-        setNavigationBar();
+        defaultPage = new JPanel();
+        orderPage = new JPanel();
+        this.isImages = isImages;
     }
 
-    public void showMoviesList() {
-        List<ShowTime> showTimes = showMoviesController.callShowMoviesListAll();
-        contentShowMoviesDiv = new JPanel();
-        contentShowMoviesDiv.setBorder(BorderFactory.createEmptyBorder(15, 15, 0, 0));
-        contentShowMoviesDiv.setLayout(new GridLayout(showTimes.size() + 1, 8, 0, 0));
+    public void startCustomerView() {
+        backgroundCustomer = new BackgroundPanel("/assets/images/home_page.png");
+        backgroundCustomer.setLayout(new BorderLayout());
+        setNavbarContent();
+        setMainContent();
 
-        // Title
-        contentShowMoviesDiv.add(makeHeaderCell(("Title")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Duration")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Genre")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Rating")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Showtime")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Price")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Studio Number")));
-        contentShowMoviesDiv.add(makeHeaderCell(("Studio Type")));
-        for (ShowTime showTime : showTimes) {
-            contentShowMoviesDiv.add(makeCell(showTime.getMovie().getTitle()));
-            contentShowMoviesDiv.add(makeCell(showTime.getMovie().getDuration() + " Menit"));
-            contentShowMoviesDiv.add(makeCell(showTime.getMovie().getGenre()));
-            contentShowMoviesDiv.add(makeCell(showTime.getMovie().getRating().toString()));
-            contentShowMoviesDiv.add(makeCell(showTime.getshowtimeDateTime()));
-            contentShowMoviesDiv.add(makeCell("Rp" + Integer.toString(showTime.getPrice())));
-            contentShowMoviesDiv.add(makeCell(showTime.getStudio().getStudioNumber()));
-            contentShowMoviesDiv.add(makeCell(showTime.getStudio().getStudioType().toString()));
+        backgroundCustomer.add(navbarContent, BorderLayout.NORTH);
+        backgroundCustomer.add(mainContent, BorderLayout.CENTER);
+
+        // Set Page Of Index
+        setHomePageView();
+
+        // Adding Page
+        mainContent.add(defaultPage, "DEFAULT");
+        mainContent.add(showNowPage, "HOME");
+        mainContent.add(orderPage, "ORDER");
+        showPage("DEFAULT");
+
+        handleActionListener();
+
+        frame.setContentPane(backgroundCustomer);
+        frame.setVisible(true);
+
+    }
+
+    public void setNavbarContent() {
+        // Navigation Bar Settings
+        navbarContent = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        navbarContent.setOpaque(true);
+        navbarContent.setBackground(new Color(130, 130, 130, 150));
+        navbarContent.setBorder(BorderFactory.createEmptyBorder(16, 16, 0, 0));
+        navbarContent.setPreferredSize(new Dimension(1024, 100));
+
+        // Navigation Bar Content
+        showNowButton = UtilJavaSwing.generateButton("Show Now");
+        showNowButton.setFont(new Font("Arial", Font.BOLD, 16));
+
+        // Adding Content
+        navbarContent.add(showNowButton);
+
+        // Adding Navigation Bar Content
+        frame.add(navbarContent, BorderLayout.CENTER);
+    }
+
+    public void handleActionListener() {
+        // Action Button
+        showNowButton.addActionListener(e -> showPage("HOME"));
+    }
+
+    public void setMainContent() {
+        mainContent = new JPanel();
+        mainContent.setOpaque(false);
+
+        cardLayout = new CardLayout();
+        mainContent.setLayout(cardLayout);
+    }
+
+    private void handleOrderTicketButton(String movies_UUID) {
+        showPage("ORDER");
+
+        // Bersihin dulu page-nya biar gak double
+        orderPage.removeAll();
+
+        try {
+            showTimes.clear();
+            showTimes = showMoviesController.callShowTimesFromOneMovies(movies_UUID);
+            System.out.println(showTimes.size());
+        } catch (EmptyListRepository e) {
+            System.out.println(e.getMessage());
         }
 
-        frame.add(contentShowMoviesDiv, BorderLayout.CENTER);
-        frame.setVisible(true);
+        JPanel moviesCards = new JPanel();
+        moviesCards.setOpaque(false);
+        moviesCards.setLayout(new BoxLayout(moviesCards, BoxLayout.X_AXIS));
+
+        for (ShowTime showTime : showTimes) {
+
+            // CARD WRAPPER
+            JPanel movieCard = new JPanel();
+            movieCard.setOpaque(false);
+            movieCard.setLayout(new BorderLayout());
+            movieCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            // IMAGE
+            if (isImages) {
+                JLabel iconMovie = getMovieIconLabel(showTime.getMovie().getTitle());
+                movieCard.add(iconMovie, BorderLayout.NORTH);
+            }
+
+            // DETAILS PANEL
+            JPanel detailsMovie = new JPanel();
+            detailsMovie.setOpaque(false);
+            detailsMovie.setLayout(new BoxLayout(detailsMovie, BoxLayout.Y_AXIS));
+            detailsMovie.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+
+            JLabel title = new JLabel(showTime.getMovie().getTitle());
+            title.setFont(new Font("Arial", Font.BOLD, 24));
+
+            JLabel studioNum = new JLabel("Studio Number: " + showTime.getStudio().getStudioNumber());
+            studioNum.setFont(new Font("Arial", Font.BOLD, 16));
+
+            JLabel studioType = new JLabel("Studio Type: " + showTime.getStudio().getStudioType());
+            studioType.setFont(new Font("Arial", Font.BOLD, 16));
+
+            detailsMovie.add(title);
+            detailsMovie.add(studioNum);
+            detailsMovie.add(studioType);
+
+            movieCard.add(detailsMovie, BorderLayout.CENTER);
+
+            // ADD CARD TO PAGE
+            moviesCards.add(movieCard);
+        }
+
+        // ADD MOVIES TO PAGE
+        orderPage.add(moviesCards);
+
+        // Refresh page
+        orderPage.revalidate();
+        orderPage.repaint();
 
     }
 
-    public void setNavigationBar() {
-        frame.setSize(1024, 1024);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        navigationDiv = new JPanel();
-        navigationDiv.setBackground(Color.decode("#c6c6c6"));
-        navigationDiv.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        navigationDiv.setBorder(BorderFactory.createEmptyBorder(15, 15, 0, 0));
-        navigationDiv.setBounds(0, 0, 1024, 100);
-
-        showMoviesButton = new JButton("Show Movies");
-        showMoviesButton.setPreferredSize(new Dimension(150, 50));
-        orderTicketButton = new JButton("Order Ticket");
-        orderTicketButton.setPreferredSize(new Dimension(150, 50));
-
-        navigationDiv.add(showMoviesButton);
-        navigationDiv.add(orderTicketButton);
-
-        frame.add(navigationDiv, BorderLayout.NORTH);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setVisible(true);
-
-        showMoviesButton.addActionListener(e -> {
-            showMoviesList();
-        });
+    private void showPage(String text) {
+        cardLayout.show(mainContent, text);
     }
 
-    private JLabel makeCell(String text) {
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-        lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    private void setHomePageView() {
+        try {
+            showTimes = showMoviesController.callShowMoviesListAll();
+            System.out.println("Show Times: " + showTimes.size());
+        } catch (EmptyListRepository e) {
+            System.out.println(e.getMessage());
+        }
 
-        // padding biar ga mepet
-        lbl.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GRAY),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
+        JPanel moviesCards = new JPanel();
+        moviesCards.setOpaque(false);
+        moviesCards.setLayout(new BoxLayout(moviesCards, BoxLayout.X_AXIS));
 
-        // kasih min width dikit biar ga jadi "..."
-        lbl.setPreferredSize(new Dimension(90, 20));
+        
+        if (isImages) {
+            for (ShowTime showTime : showTimes) {
 
-        return lbl;
+                // CARD WRAPPER
+                JPanel movieCard = new JPanel();
+                movieCard.setOpaque(false);
+                movieCard.setLayout(new BorderLayout());
+                movieCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+                // IMAGE
+                JLabel iconMovie = getMovieIconLabel(showTime.getMovie().getTitle());
+                movieCard.add(iconMovie, BorderLayout.NORTH);
+
+                // DETAILS PANEL
+                JPanel detailsMovie = new JPanel();
+                detailsMovie.setOpaque(false);
+                detailsMovie.setLayout(new BoxLayout(detailsMovie, BoxLayout.Y_AXIS));
+                detailsMovie.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+
+                JLabel title = new JLabel(showTime.getMovie().getTitle());
+                title.setFont(new Font("Arial", Font.BOLD, 24));
+
+                JLabel studio = new JLabel("Studio: " + showTime.getStudio().getStudioType());
+                studio.setFont(new Font("Arial", Font.BOLD, 16));
+                JLabel duration = new JLabel("Duration: " + showTime.getMovie().getDuration() + " mins");
+                duration.setFont(new Font("Arial", Font.BOLD, 16));
+
+                detailsMovie.add(title);
+                detailsMovie.add(studio);
+                detailsMovie.add(duration);
+
+                movieCard.add(detailsMovie, BorderLayout.CENTER);
+
+                // BUTTON
+                JButton btn = UtilJavaSwing.generateButton("Order Ticket");
+                btn.putClientProperty("movies_UUID", showTime.getMovie().getMoviesUUID());
+                btn.setPreferredSize(new Dimension(150, 40));
+
+                btn.addActionListener(e -> {
+                    JButton clickedBtn = (JButton) e.getSource();
+                    String movies_UUID = (String) clickedBtn.getClientProperty("movies_UUID");
+
+                    handleOrderTicketButton(movies_UUID);
+                });
+
+                orderButtons.add(btn);
+
+                JPanel btnPanel = new JPanel();
+                btnPanel.setOpaque(false);
+                btnPanel.add(btn);
+
+                movieCard.add(btnPanel, BorderLayout.SOUTH);
+
+                // ADD CARD TO PAGE
+                moviesCards.add(movieCard);
+            }
+
+        }
+
+        showNowPage = new JScrollPane(moviesCards);
+        showNowPage.setOpaque(false);
+        showNowPage.getViewport().setOpaque(false);
     }
 
-    private JLabel makeHeaderCell(String text) {
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-
-        // Bold biar beda dari data biasa
-        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
-
-        // Background header (harus opaque)
-        lbl.setOpaque(true);
-        lbl.setBackground(Color.decode("#eacf64")); // abu2 terang
-
-        // Border rapi
-        lbl.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-
-        // min width biar ga ngejepit
-        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 16f));
-        lbl.setPreferredSize(new Dimension(90, 25));
-
-        return lbl;
+    private JLabel getMovieIconLabel(String movieTitle) {
+        String imagePath;
+        switch (movieTitle) {
+            case "Kimetsu No Yaiba: Infinity Castle Arc":
+                imagePath = "/assets/images/kimetsu_1.png";
+                break;
+            case "Pabrik Gula":
+                imagePath = "/assets/images/pabrik_gula.png";
+                break;
+            case "Top Gun: Maverick":
+                imagePath = "/assets/images/top_gun_maverick.png";
+                break;
+            case "Mission: Impossible - Dead Reckoning":
+                imagePath = "/assets/images/mission_impossible.png";
+                break;
+            default:
+                return new JLabel("No Image");
+        }
+        return UtilJavaSwing.generateImage(imagePath, 300, 400);
     }
-
 }

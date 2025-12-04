@@ -48,7 +48,7 @@ public class LoginUI extends JFrame {
         // Header
         panelHeader = new JPanel();
         panelHeader.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        loginHeaderLabel = new JLabel("WELCOME TO NEXUS AIRPORT", SwingConstants.CENTER);
+        loginHeaderLabel = new JLabel("WELCOME TO NEXUS CINEMA", SwingConstants.CENTER);
         loginHeaderLabel.setFont(headerFont);
         loginHeaderLabel.setForeground(Color.decode("#c6c6c6"));
         panelHeader.setBackground(new Color(0, 0, 0, 150));
@@ -117,7 +117,7 @@ public class LoginUI extends JFrame {
         ImageIcon bgImage;
         JLabel displayImage;
         try {
-            bgImage = new ImageIcon(getClass().getResource("login_ui.png"));
+            bgImage = new ImageIcon(getClass().getResource("/assets/images/login_ui.png"));
             Image image = bgImage.getImage(); 
             Image newImage = image.getScaledInstance(800, 600, Image.SCALE_SMOOTH); 
             displayImage = new JLabel(new ImageIcon(newImage));

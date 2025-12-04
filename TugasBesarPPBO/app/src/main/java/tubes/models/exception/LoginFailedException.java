@@ -1,4 +1,4 @@
-package tubes.models.execptions;
+package tubes.models.exception;
 
 public class LoginFailedException extends Exception {
     public LoginFailedException(String message) {

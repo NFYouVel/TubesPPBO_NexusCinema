@@ -3,6 +3,7 @@ package tubes.controllers;
 import java.util.List;
 
 import tubes.models.ShowTime;
+import tubes.models.exception.EmptyListRepository;
 import tubes.repositories.ShowMoviesRepository;
 
 public class ShowMoviesController {
@@ -12,7 +13,11 @@ public class ShowMoviesController {
         showMoviesRepository = new ShowMoviesRepository();
     }
 
-    public List<ShowTime> callShowMoviesListAll() {
-        return showMoviesRepository.showMoviesListAll();
+    public List<ShowTime> callShowMoviesListAll() throws EmptyListRepository {
+        return showMoviesRepository.getShowMoviesListAll();
+    }
+
+    public List<ShowTime> callShowTimesFromOneMovies(String movies_UUID) throws EmptyListRepository {
+        return showMoviesRepository.getAllShowTimesFromOneMovies(movies_UUID);
     }
 }

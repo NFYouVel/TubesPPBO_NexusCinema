@@ -1,7 +1,7 @@
 package tubes.controllers;
 
 import tubes.models.enums.Roles;
-import tubes.models.execptions.LoginFailedException;
+import tubes.models.exception.LoginFailedException;
 import tubes.repositories.UserRepository;
 import tubes.utils.UtilHashing;
 import tubes.models.User;
