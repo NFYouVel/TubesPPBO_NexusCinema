@@ -19,7 +19,7 @@ public class AdminRepository {
         conn = Database.connect();
     }
 
-    public static String addMovies(Movie movie) {
+    public String getAddMovies(Movie movie) {
         String sql = "INSERT INTO movies (movies_UUID, title, duration, genre, rating) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -36,7 +36,7 @@ public class AdminRepository {
         }
     }
 
-    public static String deleteMovie(String movieUUID) {
+    public String getDeleteMovie(String movieUUID) {
         String sql = "UPDATE movies SET deleted_at = CURRENT_TIMESTAMP WHERE movies_UUID = ? AND deleted_at IS NULL";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -49,7 +49,7 @@ public class AdminRepository {
         }
     }
 
-    public static String restoreMovie(String movieUUID) {
+    public String getRestoreMovie(String movieUUID) {
         String sql = "UPDATE movies SET deleted_at = NULL WHERE movies_UUID = ? AND deleted_at IS NOT NULL";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -62,7 +62,7 @@ public class AdminRepository {
         }
     }
 
-    public static String updateMovie(Movie movie) {
+    public String getUpdateMovie(Movie movie) {
         String sql = "UPDATE movies SET title = ?, duration = ?, genre = ?, rating = ? WHERE movies_UUID = ? AND deleted_at IS NULL";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -79,7 +79,7 @@ public class AdminRepository {
         }
     } 
 
-    public static String addShowTime(ShowTime show, LocalDateTime inputShowStart) {
+    public String getAddShowTime(ShowTime show, LocalDateTime inputShowStart) {
         try {
             String sqlDurasi = "SELECT duration FROM movies WHERE movies_UUID = ?";
             PreparedStatement psDurasi = conn.prepareStatement(sqlDurasi);

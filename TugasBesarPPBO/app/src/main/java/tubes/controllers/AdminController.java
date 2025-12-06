@@ -17,12 +17,12 @@ public class AdminController {
         return adminRepository.getAddMovies(movie);
     }
 
-    public String deleteMovie(String movieuUID) {
-        return adminRepository.getDeleteMovie(movieuUID);
+    public String deleteMovie(String movieUUID) {
+        return adminRepository.getDeleteMovie(movieUUID);
     }
 
-    public String restoreMovie(String movieuUID) {
-        return adminRepository.getRestoreMovie(movieuUID);
+    public String restoreMovie(String movieUUID) {
+        return adminRepository.getRestoreMovie(movieUUID);
     }
 
     public String updateMovie(Movie movie) {
