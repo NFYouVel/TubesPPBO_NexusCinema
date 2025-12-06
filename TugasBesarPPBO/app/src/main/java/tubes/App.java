@@ -7,6 +7,7 @@ import tubes.views.AdminView;
 import tubes.views.CustomerView;
 // import tubes.views.CustomerView;
 import tubes.views.UserView;
+<<<<<<< HEAD
 
 public class App {
     public static void main(String[] args) {
@@ -15,5 +16,18 @@ public class App {
 
         // CustomerView test = new CustomerView(false);
         // test.startCustomerView();
+=======
+
+
+public class App {
+    public static void main(String[] args) {
+        UserView start = new UserView();
+        start.showMenuLogin();
+
+        // CustomerView test = new CustomerView();
+        // test.showMoviesList();
+
+        // AdminView admin = new AdminView();
+>>>>>>> 8d56660fc86c3195dbb1ce1cf59a88c5d346b30d
     }
 }
