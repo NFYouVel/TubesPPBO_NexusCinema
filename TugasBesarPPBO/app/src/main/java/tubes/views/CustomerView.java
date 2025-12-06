@@ -5,13 +5,16 @@ import java.util.List;
 
 import javax.swing.*;
 
+import tubes.controllers.HistoryTicketController;
 import tubes.controllers.ShowMoviesController;
 import tubes.models.ShowTime;
+import tubes.models.Ticket;
 
 public class CustomerView {
 
     //Controller
     private ShowMoviesController showMoviesController;
+    private HistoryTicketController historyTicketController;
 
     // GUI
     private JFrame frame;
@@ -19,15 +22,21 @@ public class CustomerView {
     // Panel
     private JPanel navigationDiv;
     private JPanel contentShowMoviesDiv;
+    private JPanel mainContentJPanel;
 
     // Input Type
     private JButton showMoviesButton;
     private JButton orderTicketButton;
+    private JButton historyTicketButton;
 
     public CustomerView() {
         showMoviesController = new ShowMoviesController();
+        historyTicketController = new HistoryTicketController();
         this.frame = new JFrame();
         setNavigationBar();
+
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
     }
 
     public void showMoviesList() {
@@ -59,6 +68,10 @@ public class CustomerView {
         frame.add(contentShowMoviesDiv, BorderLayout.CENTER);
         frame.setVisible(true);
 
+    }
+
+    public void showHistoryList() {
+        // List<Ticket> tickets = historyTicketController.TicketHistoryListAll();
     }
 
     public void setNavigationBar() {
