@@ -155,7 +155,7 @@ public class SignupUI extends JFrame {
         User user = new Customer(nama, email, password, phone, dob, Genders.valueOf(gender));
 
         try {
-            userController.signupCustomer(user);
+            userController.signupUser(user);
             showMessage("Pendaftaran berhasil!", "Sukses");
 
             dispose(); // tutup signup

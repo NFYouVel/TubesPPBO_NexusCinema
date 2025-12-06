@@ -12,6 +12,7 @@ import tubes.models.exceptions.LoginFailedException;
 
 public class UserView extends JFrame {
     private UserController userController;
+    private CustomerView customerView;
 
     private JDialog dialog;
 
@@ -241,17 +242,14 @@ public class UserView extends JFrame {
 
         try {
             User user = userController.loginVerification(email, password);
-            Staff staff = null;
 
-            if (user instanceof Staff) {
-                staff = (Staff) user;
-                showMessageDialog("Login Successful",
-                        "Login successful! Welcome " + user.getName() + " " + staff.getSalary() + " " + staff.getein());
-            }
+            showMessageDialog("Login Successful",
+                    "Login successful! Welcome " + user.getName());
 
             // TODO: pindah ke halaman berikutnya
-            // new Dashboard();
-            // dispose();
+            customerView = new CustomerView(true);
+            customerView.startCustomerView();
+            dispose();
 
         } catch (LoginFailedException e) {
 
