@@ -1,9 +1,10 @@
-// package tubes.views;
+package tubes.views;
 
-// import java.awt.*;
-// import java.util.List;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-// import javax.swing.*;
+import javax.swing.*;
 
 import tubes.controllers.HistoryTicketController;
 import tubes.controllers.ShowMoviesController;
@@ -11,14 +12,14 @@ import tubes.models.ShowTime;
 import tubes.models.exceptions.EmptyListRepository;
 import tubes.utils.UtilJavaSwing;
 
-// public class CustomerView {
+public class CustomerView {
 
     // Controller
     private ShowMoviesController showMoviesController;
     private List<ShowTime> showTimes;
     private boolean isImages;
 
-    // GUI Java Swing 
+    // GUI Java Swing
     private JFrame frame;
     private CardLayout cardLayout;
     private BackgroundPanel backgroundCustomer;
@@ -164,7 +165,7 @@ import tubes.utils.UtilJavaSwing;
         orderPage.revalidate();
         orderPage.repaint();
 
-//     }
+    }
 
     private void showPage(String text) {
         cardLayout.show(mainContent, text);
@@ -195,7 +196,7 @@ import tubes.utils.UtilJavaSwing;
                 JLabel iconMovie = getMovieIconLabel(showTime.getMovie().getTitle());
                 movieCard.add(iconMovie, BorderLayout.NORTH);
             }
-            
+
             // DETAILS PANEL
             JPanel detailsMovie = new JPanel();
             detailsMovie.setOpaque(false);

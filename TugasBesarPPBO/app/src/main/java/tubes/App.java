@@ -4,17 +4,16 @@
 package tubes;
 
 import tubes.views.AdminView;
+import tubes.views.CustomerView;
 // import tubes.views.CustomerView;
-import tubes.views.LoginUI;
+import tubes.views.UserView;
 
 public class App {
     public static void main(String[] args) {
-        // LoginUI start = new LoginUI();
-        // start.showMenuLogin();
+        UserView user = new UserView(); 
+        user.showMenuLogin();
 
-        // CustomerView test = new CustomerView();
-        // test.showMoviesList();
-
-        AdminView admin = new AdminView();
+        // CustomerView test = new CustomerView(false);
+        // test.startCustomerView();
     }
 }
