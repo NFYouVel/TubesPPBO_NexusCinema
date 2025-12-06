@@ -35,4 +35,9 @@ public class Studio {
     public void setStudioType(MovieTypes studioType) {
         this.studioType = studioType;
     }
+
+    @Override
+    public String toString() {
+        return this.studioNumber + " - " + this.studioType;
+    }
 }

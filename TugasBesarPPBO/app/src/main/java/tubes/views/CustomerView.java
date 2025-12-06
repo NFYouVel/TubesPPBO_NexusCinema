@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import tubes.controllers.HistoryTicketController;
 import tubes.controllers.ShowMoviesController;
+import tubes.models.Movie;
 import tubes.models.ShowTime;
+import tubes.models.Studio;
 import tubes.models.exceptions.EmptyListRepository;
 import tubes.utils.UtilJavaSwing;
 
@@ -266,4 +269,5 @@ public class CustomerView {
         }
         return UtilJavaSwing.generateImage(imagePath, 300, 400);
     }
+
 }

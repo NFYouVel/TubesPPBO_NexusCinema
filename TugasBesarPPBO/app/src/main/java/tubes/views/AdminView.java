@@ -1,134 +1,331 @@
-// // ... imports
-//     import tubes.models.enums.Ratings;
+package tubes.views;
 
-//     // ... variable class
-//     private JTextField tfTitle, tfDuration, tfGenre;
-//     private JComboBox<Ratings> cbRating;
-//     private JTable movieTable;
-//     private DefaultTableModel tableModel;
+import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 
-//     private void showMovieManagementPanel() {
-//         JPanel panel = new JPanel(new BorderLayout(10, 10));
-//         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
-//         // --- 1. BAGIAN FORM INPUT (ADD MOVIE) ---
-//         JPanel formPanel = new JPanel(new GridBagLayout());
-//         formPanel.setBorder(BorderFactory.createTitledBorder("Add New Movie"));
-//         GridBagConstraints gbc = new GridBagConstraints();
-//         gbc.insets = new Insets(5, 5, 5, 5);
-//         gbc.fill = GridBagConstraints.HORIZONTAL;
+// Import Project Classes
+import tubes.controllers.AdminController;
+import tubes.models.Movie;
+import tubes.models.Studio;
+import tubes.models.ShowTime;
+import tubes.models.enums.Ratings;
 
-//         // Init Components
-//         tfTitle = new JTextField(20);
-//         tfDuration = new JTextField(20);
-//         tfGenre = new JTextField(20);
-        
-//         // ComboBox untuk Rating biar admin ga salah ketik
-//         cbRating = new JComboBox<>(Ratings.values());
+public class AdminView {
 
-//         JButton btnAdd = new JButton("Add Movie");
-//         btnAdd.setBackground(new Color(100, 200, 100)); // Warna hijau biar fresh
-//         btnAdd.setForeground(Color.WHITE);
+    // --- 1. Global Variables ---
+    private AdminController adminController;
+    private JFrame frame;
+    private JPanel navigationDiv;
+    private JPanel mainContentPanel;
 
-//         // Layout Form
-//         addFormRow(formPanel, gbc, 0, "Movie Title:", tfTitle);
-//         addFormRow(formPanel, gbc, 1, "Duration (Minutes):", tfDuration);
-//         addFormRow(formPanel, gbc, 2, "Genre:", tfGenre);
-//         addFormRow(formPanel, gbc, 3, "Rating:", cbRating);
+    // Components untuk Movie Panel
+    private JTextField tfTitle, tfDuration, tfGenre;
+    private JComboBox<Ratings> cbRating;
+    private JTable movieTable;
+    private DefaultTableModel movieTableModel;
 
-//         // Tombol Add ditaruh di bawah form
-//         gbc.gridx = 1; gbc.gridy = 4;
-//         gbc.anchor = GridBagConstraints.EAST; // Rata kanan
-//         formPanel.add(btnAdd, gbc);
+    // Components untuk Showtime Panel
+    private JComboBox<Movie> cbMovieSelection;
+    private JComboBox<Studio> cbStudioSelection;
+    private JTextField tfPrice;
+    private JTextField tfShowTimeInput; // Input Tanggal Manual
 
-//         // --- 2. BAGIAN TABEL (UNTUK LIHAT HASIL) ---
-//         String[] columnNames = {"Title", "Duration", "Genre", "Rating", "UUID"};
-//         tableModel = new DefaultTableModel(columnNames, 0);
-//         movieTable = new JTable(tableModel);
-//         JScrollPane scrollPane = new JScrollPane(movieTable);
-//         scrollPane.setPreferredSize(new Dimension(800, 250));
+    // Buttons Navigation
+    private JButton btnManageMovies;
+    private JButton btnManageShowtimes;
 
-//         // --- LOGIC TOMBOL ADD ---
-//         btnAdd.addActionListener(e -> {
-//             // 1. Validasi Input Kosong
-//             if (tfTitle.getText().isEmpty() || tfDuration.getText().isEmpty() || tfGenre.getText().isEmpty()) {
-//                 JOptionPane.showMessageDialog(frame, "Semua data harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
-//                 return;
-//             }
+    // --- 2. Constructor ---
+    public AdminView() {
+        adminController = new AdminController();
+        frame = new JFrame("Admin Dashboard");
 
-//             try {
-//                 // 2. Ambil Data
-//                 String title = tfTitle.getText();
-//                 int duration = Integer.parseInt(tfDuration.getText()); // Bisa error kalau bukan angka
-//                 String genre = tfGenre.getText();
-//                 Ratings rating = (Ratings) cbRating.getSelectedItem();
+        // Setup Frame Dasar
+        frame.setSize(1024, 768);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
 
-//                 // 3. Bungkus ke Object Movie (Tanpa UUID, karena auto-generate)
-//                 Movie newMovie = new Movie(title, duration, genre, rating);
+        // Init Navigation Bar
+        initNavigation();
 
-//                 // 4. Kirim ke Controller
-//                 String result = adminController.addMovies(newMovie);
+        // Tampilan awal langsung ke Manage Movies
+        showMovieManagementPanel();
 
-//                 // 5. Cek Hasil & Feedback ke User
-//                 if (result.contains("successfully")) {
-//                     JOptionPane.showMessageDialog(frame, "Berhasil Menambahkan Film!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    
-//                     // 6. Refresh Tabel & Reset Form
-//                     loadTableData(); 
-//                     clearForm();
-//                 } else {
-//                     JOptionPane.showMessageDialog(frame, result, "Gagal", JOptionPane.ERROR_MESSAGE);
-//                 }
+        frame.setVisible(true);
+    }
 
-//             } catch (NumberFormatException ex) {
-//                 JOptionPane.showMessageDialog(frame, "Durasi harus berupa angka (menit)!", "Input Error", JOptionPane.ERROR_MESSAGE);
-//             }
-//         });
+    // --- 3. Navigation Setup ---
+    private void initNavigation() {
+        navigationDiv = new JPanel();
+        navigationDiv.setBackground(Color.DARK_GRAY);
+        navigationDiv.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
 
-//         // Load data awal
-//         loadTableData();
+        btnManageMovies = new JButton("Manage Movies");
+        btnManageShowtimes = new JButton("Manage Showtimes");
 
-//         // Susun Layout Utama
-//         panel.add(formPanel, BorderLayout.NORTH); // Form di atas
-//         panel.add(scrollPane, BorderLayout.CENTER); // Tabel di bawah
+        // Styling tombol
+        styleNavButton(btnManageMovies);
+        styleNavButton(btnManageShowtimes);
 
-//         refreshContentPanel(panel);
-//     }
+        // Action Listeners Navigasi
+        btnManageMovies.addActionListener(e -> showMovieManagementPanel());
+        btnManageShowtimes.addActionListener(e -> showShowtimeManagementPanel());
 
-//     // --- Helper Methods ---
+        navigationDiv.add(btnManageMovies);
+        navigationDiv.add(btnManageShowtimes);
 
-//     private void clearForm() {
-//         tfTitle.setText("");
-//         tfDuration.setText("");
-//         tfGenre.setText("");
-//         cbRating.setSelectedIndex(0);
-//     }
+        frame.add(navigationDiv, BorderLayout.NORTH);
+    }
 
-//     private void loadTableData() {
-//         tableModel.setRowCount(0); // Hapus data lama
-//         List<Movie> movies = adminController.getAllMovies(); // Pastikan controller punya ini
-        
-//         for (Movie m : movies) {
-//             tableModel.addRow(new Object[]{
-//                 m.getTitle(),
-//                 m.getDuration() + " min",
-//                 m.getGenre(),
-//                 m.getRating(),
-//                 m.getMoviesUUID() // UUID tetap ditampilkan di tabel buat info
-//             });
-//         }
-//     }
+    private void styleNavButton(JButton btn) {
+        btn.setBackground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setPreferredSize(new Dimension(180, 40));
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+    }
 
-//     // Helper bikin baris form rapi
-//     private void addFormRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, JComponent component) {
-//         gbc.gridx = 0; 
-//         gbc.gridy = row;
-//         gbc.weightx = 0.1;
-//         gbc.anchor = GridBagConstraints.WEST;
-//         panel.add(new JLabel(labelText), gbc);
+    // ==========================================
+    // 4. MAIN PANEL A: MANAGE MOVIES
+    // ==========================================
+    private void showMovieManagementPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-//         gbc.gridx = 1;
-//         gbc.weightx = 0.9;
-//         gbc.fill = GridBagConstraints.HORIZONTAL;
-//         panel.add(component, gbc);
-//     }
+        // --- BAGIAN FORM INPUT (ADD MOVIE) ---
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Add New Movie"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Init Components
+        tfTitle = new JTextField(20);
+        tfDuration = new JTextField(20);
+        tfGenre = new JTextField(20);
+        cbRating = new JComboBox<>(Ratings.values());
+
+        JButton btnAdd = new JButton("Add Movie");
+        btnAdd.setBackground(new Color(100, 200, 100)); // Hijau
+        btnAdd.setForeground(Color.WHITE);
+
+        // Layout Form
+        addFormRow(formPanel, gbc, 0, "Movie Title:", tfTitle);
+        addFormRow(formPanel, gbc, 1, "Duration (Minutes):", tfDuration);
+        addFormRow(formPanel, gbc, 2, "Genre:", tfGenre);
+        addFormRow(formPanel, gbc, 3, "Rating:", cbRating);
+
+        // Tombol Add ditaruh di kanan bawah form
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(btnAdd, gbc);
+
+        // --- BAGIAN TABEL (UNTUK LIHAT HASIL) ---
+        String[] columnNames = { "Title", "Duration", "Genre", "Rating", "UUID" };
+        movieTableModel = new DefaultTableModel(columnNames, 0);
+        movieTable = new JTable(movieTableModel);
+        JScrollPane scrollPane = new JScrollPane(movieTable);
+        scrollPane.setPreferredSize(new Dimension(800, 300));
+
+        // --- LOGIC TOMBOL ADD MOVIE ---
+        btnAdd.addActionListener(e -> {
+            // 1. Validasi Input Kosong
+            if (tfTitle.getText().isEmpty() || tfDuration.getText().isEmpty() || tfGenre.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Semua data harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                // 2. Ambil Data
+                String title = tfTitle.getText();
+                int duration = Integer.parseInt(tfDuration.getText());
+                String genre = tfGenre.getText();
+                Ratings rating = (Ratings) cbRating.getSelectedItem();
+
+                // 3. Bungkus ke Object Movie
+                Movie newMovie = new Movie(title, duration, genre, rating);
+
+                // 4. Kirim ke Controller
+                String result = adminController.addMovies(newMovie);
+
+                // 5. Cek Hasil
+                if (result.contains("successfully")) {
+                    JOptionPane.showMessageDialog(frame, "Berhasil Menambahkan Film!", "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    loadMovieTableData();
+                    clearMovieForm();
+                } else {
+                    JOptionPane.showMessageDialog(frame, result, "Gagal", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Durasi harus berupa angka (menit)!", "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Load data awal
+        loadMovieTableData();
+
+        // Susun Layout Utama
+        panel.add(formPanel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        refreshContentPanel(panel);
+    }
+
+    // ==========================================
+    // 5. MAIN PANEL B: MANAGE SHOWTIMES
+    // ==========================================
+    private void showShowtimeManagementPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        // --- FORM INPUT JADWAL (ACC JADWAL) ---
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Atur Jadwal Tayang (ACC Showtime)"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Spasi agak lega
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // 1. Load Data untuk Dropdown
+        List<Movie> movies = adminController.getAllMovies();
+        List<Studio> studios = adminController.getAllStudios();
+
+        // 2. Init Components
+        cbMovieSelection = new JComboBox<>(movies.toArray(new Movie[0]));
+        cbStudioSelection = new JComboBox<>(studios.toArray(new Studio[0]));
+
+        tfPrice = new JTextField();
+        tfShowTimeInput = new JTextField();
+        tfShowTimeInput.setBorder(BorderFactory.createTitledBorder("Format: yyyy-MM-dd HH:mm"));
+
+        JButton btnAcc = new JButton("ACC JADWAL");
+        btnAcc.setBackground(Color.BLUE);
+        btnAcc.setForeground(Color.WHITE);
+        btnAcc.setFont(btnAcc.getFont().deriveFont(Font.BOLD));
+        btnAcc.setPreferredSize(new Dimension(150, 40));
+
+        // 3. Layouting Form
+        addFormRow(formPanel, gbc, 0, "Pilih Film:", cbMovieSelection);
+        addFormRow(formPanel, gbc, 1, "Pilih Studio:", cbStudioSelection);
+        addFormRow(formPanel, gbc, 2, "Harga Tiket (Rp):", tfPrice);
+        addFormRow(formPanel, gbc, 3, "Waktu Tayang:", tfShowTimeInput);
+
+        // Tombol ACC
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(btnAcc, gbc);
+
+        // --- LOGIC TOMBOL ACC ---
+        btnAcc.addActionListener(e -> {
+            try {
+                // Ambil Data
+                Movie selectedMovie = (Movie) cbMovieSelection.getSelectedItem();
+                Studio selectedStudio = (Studio) cbStudioSelection.getSelectedItem();
+                String priceText = tfPrice.getText();
+                String timeText = tfShowTimeInput.getText();
+
+                // Validasi
+                if (selectedMovie == null || selectedStudio == null || priceText.isEmpty() || timeText.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Semua data harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                int price = Integer.parseInt(priceText);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                LocalDateTime showTimeDate = LocalDateTime.parse(timeText, formatter);
+
+                // Bungkus Object
+                ShowTime newShow = new ShowTime(timeText, price);
+                newShow.setMovie(selectedMovie);
+                newShow.setStudio(selectedStudio);
+
+                // Kirim ke Controller
+                String result = adminController.addShowTime(newShow, showTimeDate);
+
+                // Feedback
+                if (result.toLowerCase().contains("success")) {
+                    String msg = "Sukses!\nFilm: " + selectedMovie.getTitle() +
+                            "\nStudio: " + selectedStudio.getStudioNumber() +
+                            "\nJam: " + timeText;
+                    JOptionPane.showMessageDialog(frame, msg, "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+
+                    tfShowTimeInput.setText(""); // Reset tanggal saja
+                } else {
+                    JOptionPane.showMessageDialog(frame, result, "Gagal", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Harga harus angka!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(frame, "Format Tanggal Salah!\nGunakan: yyyy-MM-dd HH:mm", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+            }
+        });
+
+        // Masukkan Form ke Panel Utama (Posisi di Atas)
+        panel.add(formPanel, BorderLayout.NORTH);
+
+        refreshContentPanel(panel);
+    }
+
+    // ==========================================
+    // 6. HELPER METHODS
+    // ==========================================
+
+    // Method ganti panel (penting untuk navigasi)
+    private void refreshContentPanel(JPanel newPanel) {
+        if (mainContentPanel != null) {
+            frame.remove(mainContentPanel);
+        }
+        mainContentPanel = newPanel;
+        frame.add(mainContentPanel, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    private void clearMovieForm() {
+        tfTitle.setText("");
+        tfDuration.setText("");
+        tfGenre.setText("");
+        cbRating.setSelectedIndex(0);
+    }
+
+    private void loadMovieTableData() {
+        movieTableModel.setRowCount(0); // Hapus data lama
+        List<Movie> movies = adminController.getAllMovies();
+
+        for (Movie m : movies) {
+            movieTableModel.addRow(new Object[] {
+                    m.getTitle(),
+                    m.getDuration() + " min",
+                    m.getGenre(),
+                    m.getRating(),
+                    m.getMoviesUUID()
+            });
+        }
+    }
+
+    private void addFormRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, JComponent component) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.weightx = 0.1;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(new JLabel(labelText), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.9;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(component, gbc);
+    }
+}

@@ -3,15 +3,20 @@
  */
 package tubes;
 
+import tubes.views.AdminView;
 import tubes.views.CustomerView;
+// import tubes.views.CustomerView;
 import tubes.views.UserView;
+
 
 public class App {
     public static void main(String[] args) {
         // UserView start = new UserView();
         // start.showMenuLogin();
 
-        CustomerView test = new CustomerView(false);
-        test.startCustomerView();
+        // CustomerView test = new CustomerView();
+        // test.showMoviesList();
+
+        new AdminView();
     }
 }
