@@ -5,16 +5,17 @@ package tubes;
 
 import tubes.views.AdminView;
 // import tubes.views.CustomerView;
-import tubes.views.LoginUI;
+import tubes.views.UserView;
+
 
 public class App {
     public static void main(String[] args) {
-        // LoginUI start = new LoginUI();
-        // start.showMenuLogin();
+        UserView start = new UserView();
+        start.showMenuLogin();
 
         // CustomerView test = new CustomerView();
         // test.showMoviesList();
 
-        AdminView admin = new AdminView();
+        // AdminView admin = new AdminView();
     }
 }
