@@ -1,13 +1,13 @@
 package tubes.models;
 
-import tubes.models.enums.MovieTypes;
+import tubes.models.enums.StudioTypes;
 
 public class Studio {
     private String studioUUID;
     private String studioNumber;
-    private MovieTypes studioType;
+    private StudioTypes studioType;
 
-    public Studio(String studioNumber, MovieTypes studioType) {
+    public Studio(String studioNumber, StudioTypes studioType) {
         this.studioNumber = studioNumber;
         this.studioType = studioType;
     }
@@ -28,11 +28,11 @@ public class Studio {
         this.studioNumber = studioNumber;
     }
 
-    public MovieTypes getStudioType() {
+    public StudioTypes getStudioType() {
         return this.studioType;
     }
 
-    public void setStudioType(MovieTypes studioType) {
+    public void setStudioType(StudioTypes studioType) {
         this.studioType = studioType;
     }
 }

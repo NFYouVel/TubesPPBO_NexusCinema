@@ -13,7 +13,7 @@ import tubes.models.ShowTime;
 import tubes.models.Studio;
 import tubes.models.enums.Ratings;
 import tubes.models.exceptions.EmptyListRepository;
-import tubes.models.enums.MovieTypes;
+import tubes.models.enums.StudioTypes;
 import tubes.utils.Database;
 
 public class ShowMoviesRepository {
@@ -56,7 +56,7 @@ public class ShowMoviesRepository {
             } else {
                 do {
                     ShowTime temp = new ShowTime(rs.getString("show_time"), rs.getInt("show_price"));
-                    temp.setStudio(new Studio(rs.getString("studio_number"), MovieTypes.valueOf(rs.getString("type"))));
+                    temp.setStudio(new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type"))));
                     temp.setMovie(new Movie(rs.getString("title"), rs.getInt("duration"), rs.getString("genre"), Ratings.valueOf(rs.getString("rating"))));
                     showTimes.add(temp);
                 } while (rs.next());
@@ -100,7 +100,7 @@ public class ShowMoviesRepository {
                     Movie tempMovie = new Movie(rs.getString("title"), rs.getInt("duration"), rs.getString("genre"), Ratings.valueOf(rs.getString("rating")));
                     tempMovie.setMoviesUUID(rs.getString("movies_UUID"));
                     temporary.setMovie(tempMovie);
-                    temporary.setStudio(new Studio(rs.getString("studio_number"), MovieTypes.valueOf(rs.getString("type"))));
+                    temporary.setStudio(new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type"))));
                     showTimes.add(temporary);
                 } while(rs.next());
 

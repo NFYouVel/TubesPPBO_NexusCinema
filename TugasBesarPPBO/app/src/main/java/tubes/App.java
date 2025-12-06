@@ -4,6 +4,7 @@
 package tubes;
 
 import tubes.views.CustomerView;
+import tubes.views.ManagerView;
 import tubes.views.UserView;
 
 public class App {
@@ -11,7 +12,10 @@ public class App {
         // UserView start = new UserView();
         // start.showMenuLogin();
 
-        CustomerView test = new CustomerView(false);
-        test.startCustomerView();
+        ManagerView test = new ManagerView();
+        test.showAuditMenu();
+
+        // CustomerView test = new CustomerView(false);
+        // test.startCustomerView();
     }
 }
