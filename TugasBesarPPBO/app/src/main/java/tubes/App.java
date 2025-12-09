@@ -5,6 +5,7 @@ package tubes;
 
 import tubes.views.AdminView;
 import tubes.views.CustomerView;
+import tubes.views.UserListView;
 // import tubes.views.CustomerView;
 import tubes.views.UserView;
 
@@ -18,5 +19,6 @@ public class App {
         // test.showMoviesList();
 
         new AdminView();
+        // new UserListView();
     }
 }

@@ -39,6 +39,7 @@ public class AdminView {
     // Buttons Navigation
     private JButton btnManageMovies;
     private JButton btnManageShowtimes;
+    private JButton btnSignUpStaff;
 
     // --- 2. Constructor ---
     public AdminView() {
@@ -60,24 +61,46 @@ public class AdminView {
     }
 
     // --- 3. Navigation Setup ---
+    // --- 3. Navigation Setup (REVISI) ---
     private void initNavigation() {
         navigationDiv = new JPanel();
         navigationDiv.setBackground(Color.DARK_GRAY);
-        navigationDiv.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
+        // Ganti Layout utama menjadi BorderLayout
+        navigationDiv.setLayout(new BorderLayout());
+
+        // 1. Buat Panel untuk Tombol Kiri (Movies & Showtimes)
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
+        leftPanel.setOpaque(false); // Supaya background DARK_GRAY tetap terlihat
 
         btnManageMovies = new JButton("Manage Movies");
         btnManageShowtimes = new JButton("Manage Showtimes");
 
-        // Styling tombol
+        // Styling & Listener
         styleNavButton(btnManageMovies);
         styleNavButton(btnManageShowtimes);
-
-        // Action Listeners Navigasi
         btnManageMovies.addActionListener(e -> showMovieManagementPanel());
         btnManageShowtimes.addActionListener(e -> showShowtimeManagementPanel());
 
-        navigationDiv.add(btnManageMovies);
-        navigationDiv.add(btnManageShowtimes);
+        // Masukkan ke panel kiri
+        leftPanel.add(btnManageMovies);
+        leftPanel.add(btnManageShowtimes);
+
+        // 2. Buat Panel untuk Tombol Kanan (Sign Up Staff)
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 15));
+        rightPanel.setOpaque(false); // Supaya background DARK_GRAY tetap terlihat
+
+        btnSignUpStaff = new JButton("Sign Up Staff");
+
+        // Styling
+        styleNavButton(btnSignUpStaff);
+        // Tambahkan listener btnSignUpStaff di sini nanti (jika sudah ada logic-nya)
+
+        // Masukkan ke panel kanan
+        rightPanel.add(btnSignUpStaff);
+
+        // 3. Gabungkan Panel Kiri dan Kanan ke Navigation Div Utama
+        navigationDiv.add(leftPanel, BorderLayout.WEST);
+        navigationDiv.add(rightPanel, BorderLayout.EAST);
 
         frame.add(navigationDiv, BorderLayout.NORTH);
     }

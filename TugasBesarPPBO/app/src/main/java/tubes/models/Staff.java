@@ -10,7 +10,7 @@ public class Staff extends User {
 
     public Staff(String name, String email, String password, String phone, String dob, Genders gender, Roles role) {
         super(name, email, password, phone, dob, gender, role);
-        this.ein = "00000";
+        this.ein = "0000";
         this.salary = 0;
     }
     
