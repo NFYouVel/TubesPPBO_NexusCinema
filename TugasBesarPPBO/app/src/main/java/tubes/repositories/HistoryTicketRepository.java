@@ -15,6 +15,7 @@ import tubes.models.Studio;
 import tubes.models.enums.MovieTypes;
 import tubes.models.enums.Ratings;
 import tubes.models.enums.TicketStatus;
+import tubes.models.exceptions.EmptyListRepository;
 import tubes.utils.Database;
 
 public class HistoryTicketRepository {
@@ -29,7 +30,7 @@ public class HistoryTicketRepository {
         ticketOrdered = new ArrayList<>();
     }
 
-    public List<Ticket> getTicketOrdered(String custUUID) {
+    public List<Ticket> getTicketOrdered(String custUUID) throws EmptyListRepository {
         try {
             String sql = "SELECT t.*, m.*, s.*, st.*, se.* FROM ticket t JOIN show_time st ON t.show_UUID = st.show_UUID "
                     +
@@ -50,6 +51,11 @@ public class HistoryTicketRepository {
 
                 ticketOrdered.add(historyTicket);
             }
+
+            if (ticketOrdered.isEmpty()) {
+                throw new EmptyListRepository("no ticket ordered");
+            }
+
             return ticketOrdered;
         } catch (SQLException e) {
             e.printStackTrace();
