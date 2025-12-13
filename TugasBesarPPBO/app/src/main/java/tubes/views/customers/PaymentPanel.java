@@ -28,6 +28,7 @@ import tubes.models.exceptions.EmptyListException;
 import tubes.models.interfaces.PageNavigator;
 import tubes.models.interfaces.Payment;
 import tubes.utils.CLIUtils;
+import tubes.utils.EmailSender;
 import tubes.utils.UtilUUIDGenerator;
 
 
@@ -114,7 +115,7 @@ public class PaymentPanel extends JPanel {
             // OTP Generation and Email Sending
             String otpCode = CLIUtils.generateOTP();
             System.out.println("Generated OTP Code: " + otpCode); // For testing purposes
-            // EmailSender.sendEmail(email, otpCode);
+            EmailSender.sendEmail(email, otpCode);
             CLIUtils.showInformationMessage("Payment of " + (selectedSeats.size() * showTime.getStudio().getPrice()) + " using " + paymentMethod + " was successful!\n" + "A confirmation email has been sent to " + email + ".", "Payment Successful");
 
             // OTP Confirmation
