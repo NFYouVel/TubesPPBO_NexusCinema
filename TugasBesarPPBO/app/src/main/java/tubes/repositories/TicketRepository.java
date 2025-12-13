@@ -29,5 +29,25 @@ public class TicketRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }   
+    }  
+    
+    public void updateTicket(String transUUID) {
+        try {
+            PreparedStatement psmt = conn.prepareStatement("UPDATE ticket SET status = 'PAID' WHERE trans_UUID = ?;");
+            psmt.setString(1, transUUID);
+            psmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteTicket(String transUUID) {
+        try {
+            PreparedStatement psmt = conn.prepareStatement("UPDATE ticket SET deleted_at = NOW() WHERE trans_UUID = ?;");
+            psmt.setString(1, transUUID);
+            psmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
