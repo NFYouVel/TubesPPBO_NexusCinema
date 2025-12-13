@@ -5,11 +5,9 @@ public class ShowTime {
     private Movie movie;
     private Studio studio;
     private String showtimeDateTime;
-    private int price;
     
-    public ShowTime(String showtimeDateTime, int price) {
+    public ShowTime(String showtimeDateTime) {
         this.showtimeDateTime = showtimeDateTime;
-        this.price = price;
     }
     
     public String getShowtimeUUID() {
@@ -28,13 +26,6 @@ public class ShowTime {
         this.showtimeDateTime = showtimeDateTime;
     }
     
-    public int getPrice() {
-        return this.price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
     public Movie getMovie() {
         return this.movie;
     }

@@ -3,6 +3,7 @@
  */
 package tubes;
 
+import tubes.utils.EmailSender;
 import tubes.views.CustomerView;
 import tubes.views.UserView;
 
@@ -11,7 +12,9 @@ public class App {
         // UserView start = new UserView();
         // start.showMenuLogin();
 
-        CustomerView test = new CustomerView(false);
+        CustomerView test = new CustomerView(true);
         test.startCustomerView();
+
     }
+    
 }
