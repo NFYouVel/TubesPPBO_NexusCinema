@@ -12,7 +12,7 @@ public class HistoryTicketController {
         this.historyTicketRepository = new HistoryTicketRepository();
     }
 
-    public List<Ticket> TicketHistoryListAll(String custUUID) {
-        return historyTicketRepository.getTicketOrdered(custUUID);
-    }
+    // public List<Ticket> TicketHistoryListAll(String custUUID) {
+    //     return historyTicketRepository.getTicketOrdered(custUUID);
+    // }
 }
