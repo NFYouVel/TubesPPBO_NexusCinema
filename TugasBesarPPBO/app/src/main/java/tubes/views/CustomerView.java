@@ -8,7 +8,7 @@ import javax.swing.*;
 
 import tubes.controllers.ShowMoviesController;
 import tubes.models.ShowTime;
-import tubes.models.exceptions.EmptyListRepository;
+import tubes.models.exceptions.EmptyListException;
 import tubes.utils.UtilJavaSwing;
 
 public class CustomerView {
@@ -110,7 +110,7 @@ public class CustomerView {
             showTimes.clear();
             showTimes = showMoviesController.callShowTimesFromOneMovies(movies_UUID);
             System.out.println(showTimes.size());
-        } catch (EmptyListRepository e) {
+        } catch (EmptyListException e) {
             System.out.println(e.getMessage());
         }
 
@@ -174,7 +174,7 @@ public class CustomerView {
         try {
             showTimes = showMoviesController.callShowMoviesListAll();
             System.out.println("Show Times: " + showTimes.size());
-        } catch (EmptyListRepository e) {
+        } catch (EmptyListException e) {
             System.out.println(e.getMessage());
         }
 

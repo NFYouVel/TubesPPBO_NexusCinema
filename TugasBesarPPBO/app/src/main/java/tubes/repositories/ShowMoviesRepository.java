@@ -12,7 +12,7 @@ import tubes.models.Movie;
 import tubes.models.ShowTime;
 import tubes.models.Studio;
 import tubes.models.enums.Ratings;
-import tubes.models.exceptions.EmptyListRepository;
+import tubes.models.exceptions.EmptyListException;
 import tubes.models.enums.StudioTypes;
 import tubes.utils.Database;
 
@@ -30,7 +30,7 @@ public class ShowMoviesRepository {
         showTimes = new ArrayList<>();
     }
 
-    public List<ShowTime> getAllShowTimesFromOneMovies(String movies_UUID) throws EmptyListRepository {
+    public List<ShowTime> getAllShowTimesFromOneMovies(String movies_UUID) throws EmptyListException {
         try {
             showTimes.clear();
 
@@ -52,7 +52,7 @@ public class ShowMoviesRepository {
             stmt.setString(1, movies_UUID);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
-                throw new EmptyListRepository("Show Movies");
+                throw new EmptyListException("Show Movies");
             } else {
                 do {
                     ShowTime temp = new ShowTime(rs.getString("show_time"), rs.getInt("show_price"));
@@ -69,7 +69,7 @@ public class ShowMoviesRepository {
         }
     }
 
-    public List<ShowTime> getShowMoviesListAll() throws EmptyListRepository {
+    public List<ShowTime> getShowMoviesListAll() throws EmptyListException {
         try {
             showTimes.clear();
 
@@ -91,7 +91,7 @@ public class ShowMoviesRepository {
             ResultSet rs = stmt.executeQuery();
 
             if (!rs.next()) {
-                throw new EmptyListRepository("Show Movies");
+                throw new EmptyListException("Show Movies");
             } else {
                 do {
                     ShowTime temporary = new ShowTime(rs.getString("show_time"), rs.getInt("show_price"));
