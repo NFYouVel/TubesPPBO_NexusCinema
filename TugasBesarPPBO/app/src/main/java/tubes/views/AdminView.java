@@ -224,7 +224,6 @@ public class AdminView {
         cbMovieSelection = new JComboBox<>(movies.toArray(new Movie[0]));
         cbStudioSelection = new JComboBox<>(studios.toArray(new Studio[0]));
 
-        tfPrice = new JTextField();
         tfShowTimeInput = new JTextField();
         tfShowTimeInput.setBorder(BorderFactory.createTitledBorder("Format: yyyy-MM-dd HH:mm"));
 
@@ -237,7 +236,6 @@ public class AdminView {
         // 3. Layouting Form
         addFormRow(formPanel, gbc, 0, "Pilih Film:", cbMovieSelection);
         addFormRow(formPanel, gbc, 1, "Pilih Studio:", cbStudioSelection);
-        addFormRow(formPanel, gbc, 2, "Harga Tiket (Rp):", tfPrice);
         addFormRow(formPanel, gbc, 3, "Waktu Tayang:", tfShowTimeInput);
 
         // Tombol ACC
@@ -252,21 +250,19 @@ public class AdminView {
                 // Ambil Data
                 Movie selectedMovie = (Movie) cbMovieSelection.getSelectedItem();
                 Studio selectedStudio = (Studio) cbStudioSelection.getSelectedItem();
-                String priceText = tfPrice.getText();
                 String timeText = tfShowTimeInput.getText();
 
                 // Validasi
-                if (selectedMovie == null || selectedStudio == null || priceText.isEmpty() || timeText.isEmpty()) {
+                if (selectedMovie == null || selectedStudio == null || timeText.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "Semua data harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                int price = Integer.parseInt(priceText);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime showTimeDate = LocalDateTime.parse(timeText, formatter);
 
                 // Bungkus Object
-                ShowTime newShow = new ShowTime(timeText, price);
+                ShowTime newShow = new ShowTime(timeText);
                 newShow.setMovie(selectedMovie);
                 newShow.setStudio(selectedStudio);
 

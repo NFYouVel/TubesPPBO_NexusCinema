@@ -123,13 +123,12 @@ public class AdminRepository {
                     }
                 }
 
-                String sqlInsert = "INSERT INTO show_time (show_UUID, movies_UUID, studio_UUID, show_time, show_price) VALUES (?, ?, ?, ?, ?)";
+                String sqlInsert = "INSERT INTO show_time (show_UUID, movies_UUID, studio_UUID, show_time) VALUES (?, ?, ?, ?)";
                 PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
                 psInsert.setString(1, UtilUUIDGenerator.generateUUID());
                 psInsert.setString(2, show.getMovie().getMoviesUUID());
                 psInsert.setString(3, show.getStudio().getStudioUUID());
                 psInsert.setTimestamp(4, Timestamp.valueOf(inputShowStart));
-                psInsert.setInt(5, show.getPrice());
                 psInsert.executeUpdate();
                 return "Showtime added successfully.";
             } else {
