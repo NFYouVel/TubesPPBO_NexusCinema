@@ -55,4 +55,9 @@ public class Movie {
     public void setRating(Ratings rating) {
         this.rating = rating;
     }
+
+    @Override
+    public String toString() {
+        return this.title;
+    }
 }

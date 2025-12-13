@@ -3,17 +3,23 @@
  */
 package tubes;
 
+import tubes.views.AdminView;
 import tubes.utils.EmailSender;
 import tubes.views.CustomerView;
+import tubes.views.ManagerView;
 import tubes.views.UserView;
+
 
 public class App {
     public static void main(String[] args) {
         // UserView start = new UserView();
         // start.showMenuLogin();
 
-        CustomerView test = new CustomerView(true);
-        test.startCustomerView();
+        ManagerView test = new ManagerView();
+        test.showAuditMenu();
+
+        // CustomerView test = new CustomerView(true);
+        // test.startCustomerView();
 
     }
     

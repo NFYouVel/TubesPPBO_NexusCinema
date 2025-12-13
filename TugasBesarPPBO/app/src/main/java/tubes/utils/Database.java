@@ -10,7 +10,7 @@ public class Database {
     public static final String HOST = "localhost";
     public static final String USER = "root";
     public static final String PASSWORD = "";
-    public static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    public static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Jakarta";
 
     public static Connection connect() {
         Connection conn = null;

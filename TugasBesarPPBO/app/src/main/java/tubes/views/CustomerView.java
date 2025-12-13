@@ -6,11 +6,14 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import tubes.controllers.SeatController;
+import tubes.controllers.HistoryTicketController;
 import tubes.controllers.ShowTimeController;
 import tubes.controllers.TicketController;
 import tubes.models.Seat;
+import tubes.models.Movie;
 import tubes.models.ShowTime;
 import tubes.models.exceptions.EmptyListException;
 import tubes.models.interfaces.PageNavigator;
@@ -499,4 +502,5 @@ public class CustomerView implements PageNavigator{
         PaymentPanel paymentPanel = new PaymentPanel(selectedSeats, showUUID, this);
         paymentPage.add(paymentPanel, BorderLayout.CENTER);
     }
+
 }

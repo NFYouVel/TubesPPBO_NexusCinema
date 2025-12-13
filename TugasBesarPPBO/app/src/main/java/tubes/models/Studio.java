@@ -38,6 +38,11 @@ public class Studio {
         this.studioType = studioType;
     }
 
+    @Override
+    public String toString() {
+        return this.studioNumber + " - " + this.studioType;
+    }
+
     public void setPrice(int price) {
         this.price = price;
     }
