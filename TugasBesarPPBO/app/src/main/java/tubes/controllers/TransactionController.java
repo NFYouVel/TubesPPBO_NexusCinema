@@ -13,6 +13,10 @@ public class TransactionController {
         transactionRepository = new TransactionRepository();
     }
 
+    public void processTransaction(Transaction transaction, String paymentID, int grandTotal) {
+        transactionRepository.processTransaction(transaction, paymentID, grandTotal);
+    }
+    
     public String[][] getTransactionTableData() throws EmptyListException {
         List<Transaction> list = transactionRepository.getTransactionList();
 

@@ -5,6 +5,7 @@ public class Seat {
     private String seatNumber;
     private int seatRow;
     private int seatColumn;
+    private boolean isAvailable;
     
     public Seat(String seatNumber, int seatRow, int seatColumn) {
         this.seatNumber = seatNumber;
@@ -42,5 +43,13 @@ public class Seat {
     
     public void setSeatColumn(int seatColumn) {
         this.seatColumn = seatColumn;
+    }
+
+    public boolean getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 }

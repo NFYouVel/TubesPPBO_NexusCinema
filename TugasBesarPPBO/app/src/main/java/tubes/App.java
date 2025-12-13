@@ -4,6 +4,7 @@
 package tubes;
 
 import tubes.views.AdminView;
+import tubes.utils.EmailSender;
 import tubes.views.CustomerView;
 import tubes.views.ManagerView;
 import tubes.views.UserView;
@@ -17,7 +18,9 @@ public class App {
         ManagerView test = new ManagerView();
         test.showAuditMenu();
 
-        // CustomerView test = new CustomerView(false);
+        // CustomerView test = new CustomerView(true);
         // test.startCustomerView();
+
     }
+    
 }
