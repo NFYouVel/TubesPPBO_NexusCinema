@@ -168,7 +168,7 @@ public class AdminRepository {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Studio studio = new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type")));
+                Studio studio = new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type")), rs.getInt("price"));
                 studio.setStudioUUID("studio_UUID");
                 studios.add(studio);
             }

@@ -143,7 +143,7 @@ public class HistoryTicketView extends JPanel {
             lblStatus.setForeground(new Color(0, 128, 0));
             lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
             
-            JLabel lblPrice = new JLabel("Rp " + ticket.getShowTime().getPrice());
+            JLabel lblPrice = new JLabel("Rp " + ticket.getShowTime().getStudio().getPrice());
             lblPrice.setFont(new Font("SansSerif", Font.BOLD, 14));
             lblPrice.setHorizontalAlignment(SwingConstants.RIGHT);
 
