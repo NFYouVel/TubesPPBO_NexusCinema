@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.List;
 
 import tubes.models.Ticket;
-import tubes.models.exceptions.EmptyListRepository;
+import tubes.models.exceptions.EmptyListException;
 import tubes.repositories.HistoryTicketRepository;
 
 // UBAH: Sekarang extends JPanel, bukan JFrame
@@ -66,7 +66,7 @@ public class HistoryTicketView extends JPanel {
                 contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Jarak antar card
             }
             
-        } catch (EmptyListRepository e) {
+        } catch (EmptyListException e) {
             JLabel lblEmpty = new JLabel("Belum ada riwayat pemesanan.");
             lblEmpty.setFont(new Font("SansSerif", Font.ITALIC, 16));
             lblEmpty.setAlignmentX(Component.CENTER_ALIGNMENT);

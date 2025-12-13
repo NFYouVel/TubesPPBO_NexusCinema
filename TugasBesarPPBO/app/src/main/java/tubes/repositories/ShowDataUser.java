@@ -15,7 +15,7 @@ import tubes.models.User;
 import tubes.models.enums.Genders;
 import tubes.models.enums.Membership;
 import tubes.models.enums.Roles;
-import tubes.models.exceptions.EmptyListRepository;
+import tubes.models.exceptions.EmptyListException;
 import tubes.utils.Database;
 
 public class ShowDataUser {
@@ -30,7 +30,7 @@ public class ShowDataUser {
         users = new ArrayList<>();
     }
 
-    public List<User> getAllUsers() throws EmptyListRepository {
+    public List<User> getAllUsers() throws EmptyListException {
         users.clear();
 
         try {
@@ -51,7 +51,7 @@ public class ShowDataUser {
             }
 
             if (users.isEmpty()) {
-                throw new EmptyListRepository("Show User");
+                throw new EmptyListException("Show User");
             } 
 
             return users;

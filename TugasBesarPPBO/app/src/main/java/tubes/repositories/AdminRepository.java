@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tubes.models.Studio;
-import tubes.models.enums.MovieTypes;
+import tubes.models.enums.StudioTypes;
 import tubes.models.enums.Ratings;
 import tubes.models.Movie;
 import tubes.utils.Database;
@@ -168,7 +168,7 @@ public class AdminRepository {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Studio studio = new Studio(rs.getString("studio_number"), MovieTypes.valueOf(rs.getString("type")));
+                Studio studio = new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type")));
                 studio.setStudioUUID("studio_UUID");
                 studios.add(studio);
             }

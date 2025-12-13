@@ -12,10 +12,10 @@ import tubes.models.ShowTime;
 import tubes.models.Ticket;
 import tubes.models.Seat;
 import tubes.models.Studio;
-import tubes.models.enums.MovieTypes;
+import tubes.models.enums.StudioTypes;
 import tubes.models.enums.Ratings;
 import tubes.models.enums.TicketStatus;
-import tubes.models.exceptions.EmptyListRepository;
+import tubes.models.exceptions.EmptyListException;
 import tubes.utils.Database;
 
 public class HistoryTicketRepository {
@@ -30,7 +30,7 @@ public class HistoryTicketRepository {
         ticketOrdered = new ArrayList<>();
     }
 
-    public List<Ticket> getTicketOrdered(String custUUID) throws EmptyListRepository {
+    public List<Ticket> getTicketOrdered(String custUUID) throws EmptyListException {
         try {
             String sql = "SELECT t.*, m.*, s.*, st.*, se.* FROM ticket t JOIN show_time st ON t.show_UUID = st.show_UUID "
                     +
@@ -43,7 +43,7 @@ public class HistoryTicketRepository {
             while (rs.next()) {
                 ShowTime showTime = new ShowTime(rs.getString("show_time"), rs.getInt("show_price"));
                 showTime.setMovie(new Movie(rs.getString("title"), rs.getInt("duration"), rs.getString("genre"), Ratings.valueOf(rs.getString("rating"))));
-                showTime.setStudio(new Studio(rs.getString("studio_number"), MovieTypes.valueOf(rs.getString("type"))));
+                showTime.setStudio(new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type"))));
 
                 Ticket historyTicket = new Ticket(TicketStatus.PAID);
                 historyTicket.setSeats(new Seat(rs.getString("seats_num"), rs.getInt("seats_row"), rs.getInt("seats_column")));
@@ -53,7 +53,7 @@ public class HistoryTicketRepository {
             }
 
             if (ticketOrdered.isEmpty()) {
-                throw new EmptyListRepository("no ticket ordered");
+                throw new EmptyListException("no ticket ordered");
             }
 
             return ticketOrdered;
