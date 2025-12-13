@@ -8,11 +8,14 @@ import javax.swing.*;
 import tubes.controllers.UserController;
 import tubes.models.Staff;
 import tubes.models.User;
+import tubes.models.enums.Roles;
 import tubes.models.exceptions.LoginFailedException;
+import tubes.utils.UtilGlobal;
 
 public class UserView extends JFrame {
     private UserController userController;
     private CustomerView customerView;
+    private ManagerView managerView;
 
     private JDialog dialog;
 
@@ -53,12 +56,9 @@ public class UserView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1024, 1024);
 
-        backgroundLabel = addLoginBackground();
-        if (backgroundLabel == null) {
-            backgroundLabel = new JLabel();
-            backgroundLabel.setBackground(Color.LIGHT_GRAY);
-            backgroundLabel.setOpaque(true);
-        }
+        backgroundLabel = new JLabel();
+        backgroundLabel.setBackground(Color.LIGHT_GRAY);
+        backgroundLabel.setOpaque(true);
 
         layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(800, 600));
@@ -163,6 +163,7 @@ public class UserView extends JFrame {
 
         add(layeredPane);
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
 
         loginButton.addActionListener(e -> handleLogin());
@@ -246,9 +247,17 @@ public class UserView extends JFrame {
             showMessageDialog("Login Successful",
                     "Login successful! Welcome " + user.getName());
 
-            // TODO: pindah ke halaman berikutnya
-            customerView = new CustomerView(true);
-            customerView.startCustomerView();
+            if(UtilGlobal.getRole() == Roles.CUSTOMER) {
+                // TODO: pindah ke halaman Customer
+                customerView = new CustomerView(true);
+                customerView.startCustomerView();
+            }else if (UtilGlobal.getRole() == Roles.MANAGER) {
+                // TODO: pindah ke halaman Manager
+                managerView = new ManagerView();
+                managerView.showMainMenu();
+            }else{
+                // TODO: pindah ke halaman Staff
+            }
             dispose();
 
         } catch (LoginFailedException e) {
@@ -258,21 +267,6 @@ public class UserView extends JFrame {
         } catch (Exception e) {
 
             showMessageDialog("Terjadi Kesalahan", e.getMessage());
-        }
-    }
-
-    public final JLabel addLoginBackground() {
-        ImageIcon bgImage;
-        JLabel displayImage;
-        try {
-            bgImage = new ImageIcon(getClass().getResource("login_ui.png"));
-            image = bgImage.getImage();
-            newImage = image.getScaledInstance(800, 600, Image.SCALE_SMOOTH);
-            displayImage = new JLabel(new ImageIcon(newImage));
-            return displayImage;
-        } catch (Exception e) {
-            System.out.println("Image not found! Error: " + e.getMessage());
-            return null;
         }
     }
 }

@@ -1,5 +1,5 @@
 package tubes.models.enums;
 
-public enum MovieTypes {
+public enum StudioTypes {
     STARIUM, IMAX
 }
