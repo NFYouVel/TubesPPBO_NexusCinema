@@ -16,7 +16,7 @@ public class App {
         // start.showMenuLogin();
 
         ManagerView test = new ManagerView();
-        test.showAuditMenu();
+        test.showMainMenu();;
 
         // CustomerView test = new CustomerView(true);
         // test.startCustomerView();
