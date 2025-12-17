@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
+import tubes.controllers.ShowDataController;
 import tubes.models.User;
 import tubes.models.enums.Roles;
 import tubes.repositories.ShowDataUser;
@@ -26,9 +27,9 @@ public class UserListView extends JFrame {
         listPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // 3. AMBIL DATA
-        ShowDataUser repo = new ShowDataUser();
+        ShowDataController showDataController = new ShowDataController();
         try {
-            List<User> users = repo.getAllUsers();
+            List<User> users = showDataController.getShowAllUser();
             // System.out.println("Berhasil ambil " + users.size() + " data.");
 
             for (User u : users) {

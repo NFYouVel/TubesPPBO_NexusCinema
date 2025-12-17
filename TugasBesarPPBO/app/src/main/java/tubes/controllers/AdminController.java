@@ -36,12 +36,9 @@ public class AdminController {
     }
 
     public List<Studio> getAllStudios() {
-        // Asumsi di AdminRepository sudah ada method getAllStudios()
-        // Kalau belum, buat method SELECT * FROM studio di Repository ya!
         return adminRepository.getAllStudios();
     }
 
-    // Pastikan juga getAllMovies sudah ada
     public List<Movie> getAllMovies() {
         return adminRepository.getAllMovies();
     }
