@@ -1,10 +1,6 @@
 package tubes.controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import tubes.models.AuditRecord;
 import tubes.models.exceptions.EmptyListException;
 import tubes.models.exceptions.InvalidDateException;
@@ -26,42 +22,33 @@ public class AuditRecordController {
 
         List<AuditRecord> auditList = auditRepository.getAuditListByMonth(startDate, endDate);
         int grandTotal = 0;
+        int totalTicketSold = 0;
         // StringBuilder report = new StringBuilder();
         String report = "";
 
-        Map<String, List<Integer>> studioPriceMap = new HashMap<>();
+        // Map<String, List<Integer>> studioPriceMap = new HashMap<>();
 
-        for (AuditRecord r : auditList) {
-            studioPriceMap
-                    .computeIfAbsent(r.getStudioNumber(), k -> new ArrayList<>())
-                    .add(r.getTicketPrice());
-        }
+        // for (AuditRecord r : auditList) {
+        //     studioPriceMap
+        //             .computeIfAbsent(r.getStudioNumber(), k -> new ArrayList<>())
+        //             .add(r.getTicketPrice());
+        // }
 
         report += ("AUDIT REPORT — Nexus Cinema Monthly Revenue\n");
         report += ("--------------------------------------\n");
 
         for (AuditRecord auditRecord : auditList) {
-            String studio = auditRecord.getStudioNumber();
-            int price = auditRecord.getTicketPrice();
-            List<Integer> prices = studioPriceMap.get(studio);
-            int minPrice = prices.stream().min(Integer::compareTo).orElse(price);
-            int maxPrice = prices.stream().max(Integer::compareTo).orElse(price);
-
             report += ("Studio: " + auditRecord.getStudioNumber() + "\n");
             report += ("Type: " + auditRecord.getStudioType() + "\n");
-            if (minPrice == maxPrice) {
-                report += ("Ticket Price (Weekday & Weekend): " + price + "\n");
-            } else if (price == maxPrice) {
-                report += ("Ticket Price (Weekend): "+ price + "\n");
-            } else {
-                report += ("Ticket Price (Weekday): "+ price + "\n");
-            }
+            report += ("Ticket Price: " + auditRecord.getTicketPrice() + "\n");
             report += ("Tickets Sold: " + auditRecord.getTicketCount() + "\n");
             report += ("Total Income: " + auditRecord.getTotalIncome() + "\n\n");
 
+            totalTicketSold += auditRecord.getTicketCount();
             grandTotal += auditRecord.getTotalIncome();
         }
         report += ("--------------------------------------\n");
+        report += ("Total Tickets Sold: " + totalTicketSold + "\n");
         report += ("Grand Total Income: " + grandTotal);
 
         // return report.toString();

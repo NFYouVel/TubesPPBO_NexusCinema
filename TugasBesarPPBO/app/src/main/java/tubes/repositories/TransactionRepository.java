@@ -45,7 +45,7 @@ public class TransactionRepository {
     }
     public List<Transaction> getTransactionList() throws EmptyListException {
         List<Transaction> transactionList = new ArrayList<>();
-        String sql = "SELECT tr.trans_UUID AS ID_Transaction, tr.created_at AS Payment_Date, u.name, c.membership, s.studio_number, s.type, m.title, se.seats_num, s.show_price, tr.payment_method FROM `ticket` t INNER JOIN transactions tr ON t.trans_UUID = tr.trans_UUID INNER JOIN show_time st ON t.show_UUID = st.show_UUID INNER JOIN studio s ON st.studio_UUID = s.studio_UUID INNER JOIN movies m ON st.movies_UUID = m.movies_UUID INNER JOIN customer c ON tr.cust_UUID = c.cust_UUID INNER JOIN users u ON c.user_UUID = u.user_UUID INNER JOIN seats se ON t.seats_UUID = se.seats_UUID WHERE t.deleted_at IS NULL AND tr.deleted_at IS NULL ORDER BY u.name, tr.trans_UUID, m.title ASC";
+        String sql = "SELECT tr.trans_UUID AS ID_Transaction, tr.created_at AS Payment_Date, u.name, c.membership, s.studio_number, s.type, m.title, se.seats_num, s.price, tr.payment_method FROM `ticket` t INNER JOIN transactions tr ON t.trans_UUID = tr.trans_UUID INNER JOIN show_time st ON t.show_UUID = st.show_UUID INNER JOIN studio s ON st.studio_UUID = s.studio_UUID INNER JOIN movies m ON st.movies_UUID = m.movies_UUID INNER JOIN customer c ON tr.cust_UUID = c.cust_UUID INNER JOIN users u ON c.user_UUID = u.user_UUID INNER JOIN seats se ON t.seats_UUID = se.seats_UUID WHERE t.deleted_at IS NULL AND tr.deleted_at IS NULL AND tr.status = 'paid' ORDER BY u.name, tr.trans_UUID, m.title ASC";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
@@ -63,14 +63,14 @@ public class TransactionRepository {
                 StudioTypes studioType = StudioTypes.valueOf(rs.getString("type"));
                 String movieTitle = rs.getString("title");
                 String seatsNum = rs.getString("seats_num");
-                int showPrice = rs.getInt("show_price");
+                int price = rs.getInt("price");
                 if(rs.getString("payment_method").equalsIgnoreCase("E-Wallet")){
                     paymentMethod = PaymentMethods.valueOf("E_WALLET");
                 }else{
                     paymentMethod = PaymentMethods.valueOf(rs.getString("payment_method"));
                 }
                 Transaction transaction = new Transaction(transactionID, paymentDate, studioNumber, studioType,
-                        movieTitle, seatsNum, customerName, membership, paymentMethod, showPrice);
+                        movieTitle, seatsNum, customerName, membership, paymentMethod, price);
 
                 transactionList.add(transaction);
             }

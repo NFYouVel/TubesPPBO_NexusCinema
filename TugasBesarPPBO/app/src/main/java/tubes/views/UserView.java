@@ -16,6 +16,7 @@ public class UserView extends JFrame {
     private UserController userController;
     private CustomerView customerView;
     private ManagerView managerView;
+    private AdminView adminView;
 
     private JDialog dialog;
 
@@ -257,6 +258,7 @@ public class UserView extends JFrame {
                 managerView.showMainMenu();
             }else{
                 // TODO: pindah ke halaman Staff
+                adminView = new AdminView();
             }
             dispose();
 
