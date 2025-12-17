@@ -13,7 +13,7 @@ public class HistoryTicketController {
         this.historyTicketRepository = new HistoryTicketRepository();
     }
 
-    public List<Ticket> TicketHistoryListAll(String custUUID) throws EmptyListException {
+    public List<Ticket> TicketHistoryListAll(String custUUID) throws EmptyListException{
         return historyTicketRepository.getTicketOrdered(custUUID);
     }
 }

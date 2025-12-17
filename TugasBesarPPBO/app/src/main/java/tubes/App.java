@@ -7,6 +7,7 @@ import tubes.views.AdminView;
 import tubes.utils.EmailSender;
 import tubes.views.CustomerView;
 import tubes.views.ManagerView;
+import tubes.views.UserListView;
 import tubes.views.UserView;
 
 
@@ -15,11 +16,13 @@ public class App {
         // UserView start = new UserView();
         // start.showMenuLogin();
 
-        ManagerView test = new ManagerView();
-        test.showAuditMenu();
+        // ManagerView test = new ManagerView();
+        // test.showMainMenu();
 
         // CustomerView test = new CustomerView(true);
         // test.startCustomerView();
+
+        new UserListView();
 
     }
     

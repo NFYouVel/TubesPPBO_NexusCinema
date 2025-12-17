@@ -5,8 +5,10 @@ import javax.swing.*;
 import java.text.SimpleDateFormat;
 import tubes.controllers.UserController;
 import tubes.models.Customer;
+import tubes.models.Staff;
 import tubes.models.User;
 import tubes.models.enums.Genders;
+import tubes.models.enums.Roles;
 
 import java.awt.*;
 import java.util.Date;
@@ -21,16 +23,26 @@ public class SignupUI extends JFrame {
     private JTextField phoneField;
     private JSpinner dobSpinner;
     private JComboBox<String> genderCombo;
+    private JComboBox<String> roleCombo;
     private JButton registerButton;
     private JButton cancelButton;
 
     private UserView loginUI;
+    private AdminView adminUI;
 
     public SignupUI(UserView loginUI) {
         super("Signup Form");
         this.loginUI = loginUI;
         userController = new UserController();
         initUI();
+    }
+
+    public SignupUI(AdminView adminUI) {
+        super("Signup Form");
+        this.adminUI = adminUI;
+        userController = new UserController();
+        boolean isAdmin = true;
+        initUI(isAdmin);
     }
 
     private void initUI() {
@@ -80,7 +92,7 @@ public class SignupUI extends JFrame {
             dispose();
             loginUI.setVisible(true);
         });
-        registerButton.addActionListener(e -> handleRegister());
+        registerButton.addActionListener(e -> handleRegister(false));
 
         panel.add(namaLabel);
         panel.add(namaField);
@@ -99,6 +111,85 @@ public class SignupUI extends JFrame {
 
         panel.add(genderLabel);
         panel.add(genderCombo);
+
+        panel.add(registerButton);
+        panel.add(cancelButton);
+
+        add(panel, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    private void initUI(boolean isAdmin) {
+        setSize(500, 450);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel(new GridLayout(8, 2, 10, 15));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30));
+
+        Font inputFont = new Font("VERDANA", Font.BOLD, 14);
+
+        JLabel namaLabel = new JLabel("Nama:");
+        namaField = new JTextField();
+        namaField.setFont(inputFont);
+
+        JLabel emailLabel = new JLabel("Email:");
+        emailField = new JTextField();
+        emailField.setFont(inputFont);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordField = new JPasswordField();
+        passwordField.setFont(inputFont);
+
+        JLabel phoneLabel = new JLabel("Phone:");
+        phoneField = new JTextField();
+        phoneField.setFont(inputFont);
+
+        JLabel dobLabel = new JLabel("Date of Birth:");
+        dobSpinner = new JSpinner(new SpinnerDateModel());
+        dobSpinner.setEditor(new JSpinner.DateEditor(dobSpinner, "yyyy-MM-dd"));
+
+        JLabel genderLabel = new JLabel("Gender:");
+        genderCombo = new JComboBox<>(new String[]{Genders.PRIA.toString(), Genders.WANITA.toString()});
+
+        JLabel roleLabel = new JLabel("Role:");
+        roleCombo = new JComboBox<>(new String[]{Roles.STAFF.toString(), Roles.MANAGER.toString()});
+
+        registerButton = new JButton("Register");
+        registerButton.setFont(inputFont);
+        registerButton.setBackground(new Color(0, 123, 255));
+        registerButton.setForeground(Color.WHITE);
+
+        cancelButton = new JButton("Cancel");
+        cancelButton.setFont(inputFont);
+        cancelButton.setBackground(Color.GRAY);
+        cancelButton.setForeground(Color.WHITE);
+
+        cancelButton.addActionListener(e -> {
+            dispose();
+            adminUI.setVisible(true);
+        });
+        registerButton.addActionListener(e -> handleRegister(isAdmin));
+
+        panel.add(namaLabel);
+        panel.add(namaField);
+
+        panel.add(emailLabel);
+        panel.add(emailField);
+
+        panel.add(passwordLabel);
+        panel.add(passwordField);
+
+        panel.add(phoneLabel);
+        panel.add(phoneField);
+
+        panel.add(dobLabel);
+        panel.add(dobSpinner);
+
+        panel.add(genderLabel);
+        panel.add(genderCombo);
+        panel.add(roleLabel);
+        panel.add(roleCombo);
 
         panel.add(registerButton);
         panel.add(cancelButton);
@@ -132,11 +223,17 @@ public class SignupUI extends JFrame {
         return genderCombo.getSelectedItem().toString();
     }
 
-    public void addRegisterListener() {
-        registerButton.addActionListener(e -> handleRegister());
+    public String getRole() {
+        return roleCombo.getSelectedItem().toString();
     }
 
-    private void handleRegister() {
+    public void addRegisterListener() {
+        registerButton.addActionListener(e -> handleRegister(false));
+    }
+
+    private void handleRegister(boolean isAdmin) {
+        User user;
+
         String nama = getNama();
         String email = getEmail();
         String password = new String(getPassword());
@@ -144,22 +241,33 @@ public class SignupUI extends JFrame {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dob = sdf.format(getDateOfBirth());
         String gender = getGender();
-
+        
         // Validasi sederhana
         if (nama.isEmpty() || email.isEmpty() || password.isEmpty() || phone.isEmpty()) {
             showMessage("Pastikan semua field telah diisi!", "Error");
             return;
         }
 
-        // Buat object User
-        User user = new Customer(nama, email, password, phone, dob, Genders.valueOf(gender));
+        if (isAdmin) {
+            String role = getRole();
+            user = new Staff(nama, email, password, phone, dob, Genders.valueOf(gender), Roles.valueOf(role));
+        } else{
+            user = new Customer(nama, email, password, phone, dob, Genders.valueOf(gender));
+        }
+
+
 
         try {
             userController.signupUser(user);
             showMessage("Pendaftaran berhasil!", "Sukses");
 
-            dispose(); // tutup signup
-            loginUI.setVisible(true); // munculkan login lama
+            dispose();
+
+            if (adminUI != null) {
+                adminUI.setVisible(true);
+            }else {
+                loginUI.setVisible(true);
+            }
 
         } catch (Exception e) {
             showMessage("Terjadi kesalahan: " + e.getMessage(), "Error");

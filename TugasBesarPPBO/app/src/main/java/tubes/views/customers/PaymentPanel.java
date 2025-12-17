@@ -1,8 +1,19 @@
 package tubes.views.customers;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.util.List;
 
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import tubes.controllers.ShowTimeController;
 import tubes.controllers.TicketController;
@@ -12,13 +23,10 @@ import tubes.models.EWalletPayment;
 import tubes.models.Seat;
 import tubes.models.ShowTime;
 import tubes.models.Transaction;
+import tubes.models.enums.PaymentMethods;
 import tubes.models.exceptions.EmptyListException;
 import tubes.models.interfaces.PageNavigator;
 import tubes.models.interfaces.Payment;
-
-import java.util.List;
-
-import tubes.models.enums.PaymentMethods;
 import tubes.utils.CLIUtils;
 import tubes.utils.EmailSender;
 import tubes.utils.UtilUUIDGenerator;
@@ -107,19 +115,21 @@ public class PaymentPanel extends JPanel {
             // OTP Generation and Email Sending
             String otpCode = CLIUtils.generateOTP();
             System.out.println("Generated OTP Code: " + otpCode); // For testing purposes
-            // EmailSender.sendEmail(email, otpCode);
+            EmailSender.sendEmail(email, otpCode);
             CLIUtils.showInformationMessage("Payment of " + (selectedSeats.size() * showTime.getStudio().getPrice()) + " using " + paymentMethod + " was successful!\n" + "A confirmation email has been sent to " + email + ".", "Payment Successful");
 
             // OTP Confirmation
-            String otpCodeConfirmation = CLIUtils.showInputDialog("Enter the OTP code sent to your email to confirm your purchase:", "OTP Confirmation");
-            while (otpCodeConfirmation == null || otpCodeConfirmation.isEmpty()) {
-                otpCodeConfirmation = CLIUtils.showInputDialog("OTP code cannot be empty. Please enter the OTP code sent to your email:", "OTP Confirmation");
-            }
-
             boolean isConfirmed = false;
             for (int i = 0; i < 5; i++) {
+                String otpCodeConfirmation = CLIUtils.showInputDialog("Enter the OTP code sent to your email to confirm your purchase:", "OTP Confirmation");
+                while (otpCodeConfirmation == null || otpCodeConfirmation.isEmpty()) {
+                    otpCodeConfirmation = CLIUtils.showInputDialog("OTP code cannot be empty. Please enter the OTP code sent to your email:", "OTP Confirmation");
+                }
                 if (otpCodeConfirmation.equals(otpCode)) {
                     CLIUtils.showInformationMessage("OTP confirmed! Don't forget your ticket!", "OTP Confirmed");
+                    isConfirmed = true;
+                    transactionController.callUpdateTransaction(transactionID);
+                    ticketController.callUpdateTicket(transactionID);
                     break;
                 } else {
                     CLIUtils.showErrorMessage("Incorrect OTP code. Please try again.", "OTP Error");
@@ -128,6 +138,8 @@ public class PaymentPanel extends JPanel {
             }
             if (!isConfirmed) {
                 CLIUtils.showErrorMessage("Failed to confirm OTP after 5 attempts. Transaction cancelled.", "OTP Failed");
+                transactionController.callDeleteTransaction(transactionID);
+                ticketController.callDeleteTicket(transactionID);
                 return;
             }
             navigator.showPage("PRINT_TICKET");

@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
+import tubes.controllers.HistoryTicketController;
 import tubes.models.Ticket;
 import tubes.models.exceptions.EmptyListException;
 import tubes.repositories.HistoryTicketRepository;
@@ -55,9 +56,9 @@ public class HistoryTicketView extends JPanel {
     private void loadData() {
         contentPanel.removeAll();
         
+        HistoryTicketController historyController = new HistoryTicketController();
         try {
-            List<Ticket> tickets = repo.getTicketOrdered(this.custUUID);
-            
+            List<Ticket> tickets = historyController.TicketHistoryListAll(custUUID);
             for (Ticket t : tickets) {
                 // Panggil Inner Class TicketCard
                 TicketCard card = new TicketCard(t);
@@ -83,10 +84,7 @@ public class HistoryTicketView extends JPanel {
         contentPanel.repaint();
     }
 
-    // ==========================================================
-    // INNER CLASS: TicketCard
     // (Tampilan per tiket)
-    // ==========================================================
     private class TicketCard extends JPanel {
 
         public TicketCard(Ticket ticket) {

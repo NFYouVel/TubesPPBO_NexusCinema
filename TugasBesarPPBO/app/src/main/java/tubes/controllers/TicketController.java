@@ -15,4 +15,11 @@ public class TicketController {
     public void processTicket(String transUUID, String showUUID, List<Seat> selectedSeats) {
         ticketRepository.processTicket(transUUID, showUUID, selectedSeats);
     }
+    public void callDeleteTicket(String transUUID) {
+        ticketRepository.deleteTicket(transUUID);
+    }
+    public void callUpdateTicket(String transUUID) {
+        ticketRepository.updateTicket(transUUID);
+    }
+
 }

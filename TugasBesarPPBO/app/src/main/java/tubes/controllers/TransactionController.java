@@ -16,6 +16,12 @@ public class TransactionController {
     public void processTransaction(Transaction transaction, String paymentID, int grandTotal) {
         transactionRepository.processTransaction(transaction, paymentID, grandTotal);
     }
+    public void callUpdateTransaction(String transUUID) {
+        transactionRepository.updateTransaction(transUUID);
+    }
+    public void callDeleteTransaction(String transUUID) {
+        transactionRepository.deleteTransaction(transUUID);
+    }
     
     public String[][] getTransactionTableData() throws EmptyListException {
         List<Transaction> list = transactionRepository.getTransactionList();
