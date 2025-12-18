@@ -13,8 +13,8 @@ public class TransactionController {
         transactionRepository = new TransactionRepository();
     }
 
-    public void processTransaction(Transaction transaction, String paymentID, int grandTotal) {
-        transactionRepository.processTransaction(transaction, paymentID, grandTotal);
+    public void processTransaction(Transaction transaction, int grandTotal) {
+        transactionRepository.processTransaction(transaction, grandTotal);
     }
     public void callUpdateTransaction(String transUUID) {
         transactionRepository.updateTransaction(transUUID);

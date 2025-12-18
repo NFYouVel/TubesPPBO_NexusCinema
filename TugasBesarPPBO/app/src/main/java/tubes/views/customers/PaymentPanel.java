@@ -18,8 +18,8 @@ import javax.swing.SwingConstants;
 import tubes.controllers.ShowTimeController;
 import tubes.controllers.TicketController;
 import tubes.controllers.TransactionController;
-import tubes.models.CardPayment;
-import tubes.models.EWalletPayment;
+import tubes.models.CardTransaction;
+import tubes.models.EWalletTransaction;
 import tubes.models.Seat;
 import tubes.models.ShowTime;
 import tubes.models.Transaction;
@@ -82,39 +82,40 @@ public class PaymentPanel extends JPanel {
             String email = emailField.getText();
             String paymentMethod = (String) paymentBox.getSelectedItem();
             String identifierNumber = "";
+            Transaction transaction = null;
             Payment payment;
-            boolean valid = false;
 
+            String transactionID = UtilUUIDGenerator.generateUUID();
+            
             if (paymentMethod.equals("CARD")) {
                 identifierNumber = CLIUtils.showInputDialog("Enter your 16-digit card number:", "Card Payment");
-                payment = new CardPayment(identifierNumber);
-                valid = payment.validate();
+                payment = new CardTransaction(transactionID, identifierNumber);
+                // Payment Validation
+                if(payment.validate()) {
+                    transaction = new CardTransaction(transactionID, identifierNumber);
+                } else {
+                    CLIUtils.showErrorMessage("Invalid payment. Please check your card number and try again.", "Payment Error");
+                    return;
+                }
             } else if (paymentMethod.equals("E-WALLET")) {
                 identifierNumber = CLIUtils.showInputDialog("Enter your e-wallet ID:", "E-Wallet Payment");
-                payment = new EWalletPayment(identifierNumber);
-                valid = payment.validate();
-            }
-
-            // Payment Validation
-            if (!valid) {
-                CLIUtils.showErrorMessage("Invalid payment. Please check your payment ID and try again.", "Payment Error");
-                return;
-            }
-            if (identifierNumber.equals("")) {
-                return;
+                payment = new EWalletTransaction(transactionID, identifierNumber);
+                // Payment Validation
+                if(payment.validate()) {
+                    transaction = new EWalletTransaction(transactionID, identifierNumber);
+                } else {
+                    CLIUtils.showErrorMessage("Invalid payment. Please check your e-wallet ID and try again.", "Payment Error");
+                    return;
+                }
             }
 
             // Send to Database
-            String transactionID = UtilUUIDGenerator.generateUUID();
-            Transaction transaction = new Transaction(paymentMethod.equals("CARD") ? PaymentMethods.CARD : PaymentMethods.E_WALLET);
-            transaction.setTransactionUUID(transactionID);
-            transactionController.processTransaction(transaction, identifierNumber, selectedSeats.size() * showTime.getStudio().getPrice());
-
+            transactionController.processTransaction(transaction, selectedSeats.size() * showTime.getStudio().getPrice());
             ticketController.processTicket(transactionID, showUUID, selectedSeats);
 
             // OTP Generation and Email Sending
             String otpCode = CLIUtils.generateOTP();
-            System.out.println("Generated OTP Code: " + otpCode); // For testing purposes
+            System.out.println("Generated OTP Code: " + otpCode); 
             EmailSender.sendEmail(email, otpCode);
             CLIUtils.showInformationMessage("Payment of " + (selectedSeats.size() * showTime.getStudio().getPrice()) + " using " + paymentMethod + " was successful!\n" + "A confirmation email has been sent to " + email + ".", "Payment Successful");
 

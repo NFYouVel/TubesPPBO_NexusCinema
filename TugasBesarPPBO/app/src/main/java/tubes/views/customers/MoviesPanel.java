@@ -80,7 +80,7 @@ public class MoviesPanel extends JPanel {
                 JButton clickedBtn = (JButton) e.getSource();
                 String movies_UUID = (String) clickedBtn.getClientProperty("movies_UUID");
 
-                navigator.goToStudioTypePage(movies_UUID);
+                navigator.viewStudioType(movies_UUID);
             });
 
             JPanel btnPanel = new JPanel();

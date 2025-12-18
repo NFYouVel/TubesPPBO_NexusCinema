@@ -30,12 +30,12 @@ public class TransactionRepository {
     public TransactionRepository() {
     }
 
-    public void processTransaction(Transaction transaction, String paymentID, int grandTotal) {
+    public void processTransaction(Transaction transaction, int grandTotal) {
         try {
             PreparedStatement psmt = conn.prepareStatement("INSERT INTO transactions (trans_UUID, cust_UUID, paymentID, payment_method, grand_total) VALUES (?, ?, ?, ?, ?);");
             psmt.setString(1, transaction.getTransactionUUID());
             psmt.setString(2, UtilGlobal.getGlobalUUID());
-            psmt.setString(3, paymentID);
+            psmt.setString(3, transaction.getPaymentID());
             psmt.setString(4, transaction.getPaymentMethods().toString());
             psmt.setInt(5, grandTotal);
             psmt.executeUpdate();

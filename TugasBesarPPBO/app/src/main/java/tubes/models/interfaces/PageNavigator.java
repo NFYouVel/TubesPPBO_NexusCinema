@@ -1,6 +1,11 @@
 package tubes.models.interfaces;
 
+import java.util.List;
+
+import tubes.models.Seat;
+
 public interface PageNavigator {
     void showPage(String pageName);
-    void goToStudioTypePage(String moviesUUID);
+    void viewStudioType(String moviesUUID);
+    void goToSeatPage(String showtimeUUID);
 }

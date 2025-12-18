@@ -4,7 +4,7 @@ import tubes.models.enums.Membership;
 import tubes.models.enums.PaymentMethods;
 import tubes.models.enums.StudioTypes;
 
-public class Transaction {
+public class Transaction{
     private String transactionUUID;
     private String transactionDateTime;
     private String studioNumber;
@@ -15,8 +15,11 @@ public class Transaction {
     private Membership membership;
     private PaymentMethods paymentMethods;
     private int price;
+    protected String paymentID;
 
-    public Transaction(PaymentMethods paymentMethods) {
+    public Transaction(String transactionUUID, String paymentID, PaymentMethods paymentMethods) {
+        this.transactionUUID = transactionUUID;
+        this.paymentID = paymentID;
         this.paymentMethods = paymentMethods;
     }
 
@@ -112,6 +115,13 @@ public class Transaction {
 
     public void setPaymentMethods(PaymentMethods paymentMethods) {
         this.paymentMethods = paymentMethods;
+    }
+    
+    public String getPaymentID() {
+        return this.paymentID;
+    }
+    public void setPaymentID(String paymentID) {
+        this.paymentID = paymentID;
     }
 
 }

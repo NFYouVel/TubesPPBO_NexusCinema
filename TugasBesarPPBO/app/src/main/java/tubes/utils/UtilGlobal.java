@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tubes.models.Seat;
+import tubes.models.enums.Membership;
 import tubes.models.enums.Roles;
 
 public class UtilGlobal {
 
     private static String globalUUID;
     private static Roles role;
-    private static List<Seat> selectedSeats = new ArrayList<>();
+    private static Membership membership;
     private static String showUUID;
 
     public static void setGlobalUUID(String globalUUID) {
@@ -29,12 +30,11 @@ public class UtilGlobal {
         return role;
     }
 
-    public static void setSelectedSeats(List<Seat> seats) {
-        selectedSeats = seats;
+    public static void setMembership(Membership membership) {
+        UtilGlobal.membership = membership;
     }
-    
-    public static List<Seat> getSelectedSeats() {
-        return selectedSeats;
+    public static Membership getMembership() {
+        return membership;
     }
 
     public static String getShowUUID() {
