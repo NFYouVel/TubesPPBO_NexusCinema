@@ -51,7 +51,7 @@ public class TransactionController {
                 "Payment Date",
                 "Customer",
                 "Membership",
-                "Studio",
+                "Studio / Type",
                 "Movie Title",
                 "Seat",
                 "Price",

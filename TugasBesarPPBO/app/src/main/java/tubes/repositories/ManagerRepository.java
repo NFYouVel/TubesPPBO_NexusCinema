@@ -7,18 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.relation.Role;
-
 import tubes.models.Customer;
 import tubes.models.Staff;
 import tubes.models.User;
 import tubes.models.enums.Genders;
-import tubes.models.enums.Membership;
 import tubes.models.enums.Roles;
 import tubes.models.exceptions.EmptyListException;
 import tubes.utils.Database;
 
-public class ShowDataUser {
+public class ManagerRepository {
     private static final Connection conn;
     private List<User> users;
 
@@ -26,7 +23,7 @@ public class ShowDataUser {
         conn = Database.connect();
     }
 
-    public ShowDataUser() {
+    public ManagerRepository() {
         users = new ArrayList<>();
     }
 
@@ -42,17 +39,19 @@ public class ShowDataUser {
                 Roles roleEnum = Roles.valueOf(rs.getString("role"));
                 Genders genderEnum = Genders.valueOf(rs.getString("gender"));
                 if (roleEnum == Roles.CUSTOMER) {
-                    User user = new Customer(rs.getString("name"), rs.getString("email"), "", rs.getString("phone"), rs.getString("date_of_birth"), genderEnum);
+                    User user = new Customer(rs.getString("name"), rs.getString("email"), "", rs.getString("phone"),
+                            rs.getString("date_of_birth"), genderEnum);
                     users.add(user);
                 } else if (roleEnum == Roles.STAFF || roleEnum == Roles.MANAGER) {
-                    User user = new Staff(rs.getString("name"), rs.getString("email"), "", rs.getString("phone"), rs.getString("date_of_birth"), genderEnum, roleEnum);
+                    User user = new Staff(rs.getString("name"), rs.getString("email"), "", rs.getString("phone"),
+                            rs.getString("date_of_birth"), genderEnum, roleEnum);
                     users.add(user);
                 }
             }
 
             if (users.isEmpty()) {
-                throw new EmptyListException("Show User");
-            } 
+                throw new EmptyListException("No users found.");
+            }
 
             return users;
         } catch (SQLException e) {

@@ -33,7 +33,6 @@ public class AdminView {
     // Components untuk Showtime Panel
     private JComboBox<Movie> cbMovieSelection;
     private JComboBox<Studio> cbStudioSelection;
-    private JTextField tfPrice;
     private JTextField tfShowTimeInput; // Input Tanggal Manual
 
     // Buttons Navigation
@@ -58,6 +57,14 @@ public class AdminView {
         showMovieManagementPanel();
 
         frame.setVisible(true);
+    }
+
+    public void setVisible(boolean visible) {
+        frame.setVisible(visible);
+    }
+
+    public void dispose() {
+        frame.dispose();
     }
 
     // --- 3. Navigation Setup ---
@@ -90,6 +97,11 @@ public class AdminView {
         rightPanel.setOpaque(false); // Supaya background DARK_GRAY tetap terlihat
 
         btnSignUpStaff = new JButton("Sign Up Staff");
+
+        btnSignUpStaff.addActionListener(e ->  {
+            frame.setVisible(false);; // sembunyikan login
+            new SignupUI(this); // kirim reference
+        });
 
         // Styling
         styleNavButton(btnSignUpStaff);

@@ -41,9 +41,9 @@ public class HistoryTicketRepository {
             ps.setString(1, custUUID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ShowTime showTime = new ShowTime(rs.getString("show_time"), rs.getInt("show_price"));
+                ShowTime showTime = new ShowTime(rs.getString("show_time"));
                 showTime.setMovie(new Movie(rs.getString("title"), rs.getInt("duration"), rs.getString("genre"), Ratings.valueOf(rs.getString("rating"))));
-                showTime.setStudio(new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type"))));
+                showTime.setStudio(new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type")), rs.getInt("price")));
 
                 Ticket historyTicket = new Ticket(TicketStatus.PAID);
                 historyTicket.setSeats(new Seat(rs.getString("seats_num"), rs.getInt("seats_row"), rs.getInt("seats_column")));

@@ -1,22 +1,29 @@
 package tubes.views;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import tubes.controllers.AuditRecordController;
+import tubes.controllers.ManagerController;
 import tubes.controllers.TransactionController;
+import tubes.models.User;
+import tubes.models.enums.Roles;
 import tubes.models.exceptions.EmptyListException;
 import tubes.models.exceptions.InvalidDateException;
 
 public class ManagerView {
     private AuditRecordController auditController;
     private TransactionController transactionController;
+    private ManagerController managerController;
 
     public ManagerView() {
         auditController = new AuditRecordController();
         transactionController = new TransactionController();
+        managerController = new ManagerController();
     }
 
     public void showMainMenu() {
@@ -32,11 +39,12 @@ public class ManagerView {
 
         // Panel tombol menu
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 1, 10, 10));
+        panel.setLayout(new GridLayout(4, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
         JButton auditBtn = new JButton("Audit Report");
         JButton transactionBtn = new JButton("Transaction History");
+        JButton dataUserBtn = new JButton("Show Data User");
         JButton exitBtn = new JButton("Exit / Sign Out");
 
         // Event tombol
@@ -55,6 +63,16 @@ public class ManagerView {
             }
         });
 
+        dataUserBtn.addActionListener(e -> {
+            frame.dispose();
+            try {
+                showUserList();
+            } catch (EmptyListException ex) {
+                showMessage(frame, ex.getMessage(), "Empty List User");
+                showMainMenu();
+            }
+        });
+
         exitBtn.addActionListener(e -> {
             frame.dispose();
             UserView start = new UserView();
@@ -63,6 +81,7 @@ public class ManagerView {
 
         panel.add(auditBtn);
         panel.add(transactionBtn);
+        panel.add(dataUserBtn);
         panel.add(exitBtn);
 
         frame.add(panel, BorderLayout.CENTER);
@@ -193,7 +212,6 @@ public class ManagerView {
         JPanel topPanel = new JPanel(new BorderLayout());
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton refreshBtn = new JButton("Refresh");
         JButton exitBtn = new JButton("Exit");
         Color dangerRed = new Color(220, 53, 69);
         Color dangerDark = new Color(200, 35, 51);
@@ -217,7 +235,6 @@ public class ManagerView {
             }
         });
 
-        leftPanel.add(refreshBtn);
         rightPanel.add(exitBtn);
 
         topPanel.add(leftPanel, BorderLayout.WEST);
@@ -228,16 +245,7 @@ public class ManagerView {
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Load Data First Time
-            loadTableData(table);
-
-        refreshBtn.addActionListener(e -> {
-            try {
-                loadTableData(table);
-            } catch (EmptyListException ex) {
-                showMessage(frame, ex.getMessage(), "Empty List Transaction");
-                showMainMenu();
-            }
-        });
+        loadTableData(table);
 
         exitBtn.addActionListener(e -> {
             frame.dispose();
@@ -249,6 +257,137 @@ public class ManagerView {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public void showUserList() throws EmptyListException {
+        JFrame frame = new JFrame("Nexus Cinema - Data User");
+        frame.setSize(500, 650);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.getContentPane().setBackground(new Color(245, 245, 245));
+        frame.setLayout(new BorderLayout());
+
+        // ===== TOP PANEL (TITLE + EXIT)
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(new EmptyBorder(10, 15, 10, 15));
+        topPanel.setBackground(Color.WHITE);
+
+        JLabel title = new JLabel("User List");
+        title.setFont(new Font("SansSerif", Font.BOLD, 20));
+                JButton exitBtn = new JButton("Exit");
+        Color dangerRed = new Color(220, 53, 69);
+        Color dangerDark = new Color(200, 35, 51);
+
+        exitBtn.setBackground(dangerRed);
+        exitBtn.setForeground(Color.WHITE);
+        exitBtn.setFocusPainted(false);
+        exitBtn.setBorderPainted(false);
+        exitBtn.setOpaque(true);
+
+        // Hover effect
+        exitBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                exitBtn.setBackground(dangerDark);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                exitBtn.setBackground(dangerRed);
+            }
+        });
+
+        exitBtn.addActionListener(e -> {
+            frame.dispose();
+            showMainMenu();
+        });
+
+        topPanel.add(title, BorderLayout.WEST);
+        topPanel.add(exitBtn, BorderLayout.EAST);
+
+        // ===== LIST PANEL
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBackground(new Color(245, 245, 245));
+        listPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        for (User u : managerController.getAllUsers()) {
+            JPanel card = createUserCard(u);
+            card.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(card);
+            listPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(listPanel);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+    }
+
+    private JPanel createUserCard(User u) {
+        JPanel card = new JPanel();
+
+        // Pakai BoxLayout Y_AXIS biar elemen di dalam kartu susun ke bawah rapi
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+                new EmptyBorder(15, 15, 15, 15)));
+        card.setBackground(Color.WHITE);
+
+        // Ukuran Kartu (Maksimal lebar, tinggi secukupnya)
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+
+        // --- ISI KARTU ---
+
+        // Warna Role
+        String roleText = u.getRole().toString();
+        Color roleColor = Color.GRAY;
+        if (u.getRole() == Roles.CUSTOMER)
+            roleColor = new Color(0, 120, 215);
+        else if (u.getRole() == Roles.STAFF)
+            roleColor = new Color(34, 139, 34);
+        else if (u.getRole() == Roles.MANAGER)
+            roleColor = new Color(220, 20, 60);
+
+        // Elemen-elemen
+        JLabel lblName = new JLabel(u.getName());
+        lblName.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+        JLabel lblRole = new JLabel(roleText);
+        lblRole.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lblRole.setForeground(roleColor);
+
+        JSeparator sep = new JSeparator();
+        sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 5)); // Batasi tinggi garis
+        sep.setForeground(Color.LIGHT_GRAY);
+
+        JLabel lblEmail = new JLabel("📧 " + u.getEmail());
+        JLabel lblPhone = new JLabel("📞 " + u.getPhone());
+        JLabel lblBio = new JLabel("👤 " + u.getGender() + " | 🎂 " + u.getDob());
+
+        Font dataFont = new Font("SansSerif", Font.PLAIN, 13);
+        lblEmail.setFont(dataFont);
+        lblPhone.setFont(dataFont);
+        lblBio.setFont(dataFont);
+
+        // --- SUSUN (Rata Kiri) ---
+        JComponent[] components = { lblName, lblRole, sep, lblEmail, lblPhone, lblBio };
+
+        for (JComponent c : components) {
+            c.setAlignmentX(Component.LEFT_ALIGNMENT); // Rata Kiri
+            card.add(c);
+            if (c != sep)
+                card.add(Box.createRigidArea(new Dimension(0, 5))); // Jarak dikit
+            else
+                card.add(Box.createRigidArea(new Dimension(0, 10))); // Jarak abis garis
+        }
+
+        return card;
     }
 
     private void loadTableData(JTable table) throws EmptyListException {

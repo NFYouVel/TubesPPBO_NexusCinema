@@ -3,6 +3,7 @@ package tubes.controllers;
 import java.util.List;
 
 import tubes.models.Ticket;
+import tubes.models.exceptions.EmptyListException;
 import tubes.repositories.HistoryTicketRepository;
 
 public class HistoryTicketController {
@@ -12,7 +13,7 @@ public class HistoryTicketController {
         this.historyTicketRepository = new HistoryTicketRepository();
     }
 
-    // public List<Ticket> TicketHistoryListAll(String custUUID) {
-    //     return historyTicketRepository.getTicketOrdered(custUUID);
-    // }
+    public List<Ticket> TicketHistoryListAll(String custUUID) throws EmptyListException{
+        return historyTicketRepository.getTicketOrdered(custUUID);
+    }
 }
