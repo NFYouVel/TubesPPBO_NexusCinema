@@ -12,8 +12,8 @@ import tubes.views.UserView;
 
 public class App {
     public static void main(String[] args) {
-        // UserView start = new UserView();
-        // start.showMenuLogin();
+        UserView start = new UserView();
+        start.showMenuLogin();
 
         // ManagerView test = new ManagerView();
         // test.showMainMenu();

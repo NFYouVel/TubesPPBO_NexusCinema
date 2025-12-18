@@ -1,19 +1,32 @@
 package tubes.views;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 
 import tubes.controllers.SeatController;
-import tubes.controllers.HistoryTicketController;
 import tubes.controllers.ShowTimeController;
 import tubes.controllers.TicketController;
 import tubes.models.Seat;
-import tubes.models.Movie;
 import tubes.models.ShowTime;
 import tubes.models.exceptions.EmptyListException;
 import tubes.models.interfaces.PageNavigator;
@@ -40,28 +53,36 @@ public class CustomerView implements PageNavigator{
     private JPanel mainContent;
     // Navbar Content
     private JButton moviesButton;
+    private JButton historyButton;
+    private JButton logoutButton;
 
     // Pages
     private JPanel defaultPage; // Empty Page just for default
     private JScrollPane moviesPage; // Page List of Movies
     private JPanel showTimePage; // Page List of Show Times from one movies
     private JPanel seatSelectionPage; // Page for Seat Selection
-    private JPanel paymentPage;
-    private JPanel printTicketPage;
+    private JPanel paymentPage; // Page for Payment
+    private JPanel printTicketPage; // Page for Print Ticket
+    private JPanel historyPage;
 
     // Seat Selection Page Components
     private List<Seat> selectedSeats;
 
     public CustomerView(boolean isImages) {
+        // Frame
         frame = UtilJavaSwing.generateFrame("Customer View", 1024, 800);
+        // Controller
         showMoviesController = new ShowTimeController();
         seatController = new SeatController();
         ticketController = new TicketController();
+        // Pages
         defaultPage = new JPanel();
         showTimePage = new JPanel();
         paymentPage = new JPanel();
         seatSelectionPage = new JPanel();
         printTicketPage = new JPanel();
+        historyPage = new JPanel();
+        // Other Attributes
         this.isImages = isImages;
     }
 
@@ -71,7 +92,7 @@ public class CustomerView implements PageNavigator{
         backgroundCustomer.setLayout(new BorderLayout());
         setNavbarContent();
         setMainContent();
-
+        
         backgroundCustomer.add(navbarContent, BorderLayout.NORTH);
         backgroundCustomer.add(mainContent, BorderLayout.CENTER);
 
@@ -85,9 +106,10 @@ public class CustomerView implements PageNavigator{
         mainContent.add(seatSelectionPage, "SEAT_SELECTION");
         mainContent.add(paymentPage, "PAYMENT");
         mainContent.add(printTicketPage, "PRINT_TICKET");
-        showPage("DEFAULT");
+        mainContent.add(historyPage, "HISTORY");
+        showPage("DEFAULT"); 
 
-        handleMoviesActionButton();
+        handleNavigationActionButton();
 
         frame.setContentPane(backgroundCustomer);
         frame.revalidate(); // penting
@@ -108,23 +130,58 @@ public class CustomerView implements PageNavigator{
         moviesButton = UtilJavaSwing.generateButton("MOVIES");
         moviesButton.setFont(new Font("Arial", Font.BOLD, 16));
 
+        historyButton = UtilJavaSwing.generateButton("HISTORY");
+        historyButton.setFont(new Font("Arial", Font.BOLD, 16));
+
+        logoutButton = UtilJavaSwing.generateButton("LOGOUT");
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 16));
+
         // Adding Content
         navbarContent.add(moviesButton);
+        navbarContent.add(Box.createHorizontalStrut(20));
+        navbarContent.add(historyButton);
+        navbarContent.add(Box.createHorizontalStrut(20));
+        navbarContent.add(logoutButton);
+
 
         // Adding Navigation Bar Content
         frame.add(navbarContent, BorderLayout.CENTER);
     }
 
-    private void handleMoviesActionButton() {
+    private void handleNavigationActionButton() {
         // Action Button
         moviesButton.addActionListener(e -> {
+            navbarContent.removeAll();
+            navbarContent.add(moviesButton);
+            navbarContent.add(historyButton);
+            navbarContent.revalidate();
+            navbarContent.repaint();
+
+            clearFrameContent();
+            showPage("HOME");
+        });
+
+        historyButton.addActionListener(e -> {
+            JPanel historyContent = new HistoryTicketView(UtilGlobal.getGlobalUUID());
+            historyPage.add(historyContent, BorderLayout.CENTER);
+
             navbarContent.removeAll();
             navbarContent.add(moviesButton);
             navbarContent.revalidate();
             navbarContent.repaint();
 
             clearFrameContent();
-            showPage("HOME");
+            showPage("HISTORY");
+        });
+
+        logoutButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(frame, "Are you sure you want to logout?", "Logout Confirmation", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                frame.dispose();
+                UtilGlobal.setGlobalUUID(null);
+                UserView loginView = new UserView();
+                loginView.showMenuLogin();
+            }
         });
     }
 
