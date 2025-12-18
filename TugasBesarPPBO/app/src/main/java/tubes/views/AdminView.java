@@ -15,6 +15,8 @@ import tubes.models.Movie;
 import tubes.models.Studio;
 import tubes.models.ShowTime;
 import tubes.models.enums.Ratings;
+import tubes.utils.UtilGlobal;
+import tubes.utils.UtilJavaSwing;
 
 public class AdminView {
 
@@ -39,6 +41,7 @@ public class AdminView {
     private JButton btnManageMovies;
     private JButton btnManageShowtimes;
     private JButton btnSignUpStaff;
+    private JButton logoutButton;
 
     // --- 2. Constructor ---
     public AdminView() {
@@ -98,9 +101,26 @@ public class AdminView {
 
         btnSignUpStaff = new JButton("Sign Up Staff");
 
-        btnSignUpStaff.addActionListener(e ->  {
-            frame.setVisible(false);; // sembunyikan login
+        btnSignUpStaff.addActionListener(e -> {
+            frame.setVisible(false);
+            ; // sembunyikan login
             new SignupUI(this); // kirim reference
+        });
+
+        logoutButton = new JButton("LOGOUT");
+        styleNavButton(logoutButton);
+        logoutButton.setBackground(new Color(220, 53, 69)); 
+        logoutButton.setForeground(Color.WHITE); 
+
+        logoutButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(frame, "Are you sure you want to logout?", "Logout Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                frame.dispose();
+                UtilGlobal.setGlobalUUID(null);
+                UserView loginView = new UserView();
+                loginView.showMenuLogin();
+            }
         });
 
         // Styling
@@ -109,6 +129,7 @@ public class AdminView {
 
         // Masukkan ke panel kanan
         rightPanel.add(btnSignUpStaff);
+        rightPanel.add(logoutButton);
 
         // 3. Gabungkan Panel Kiri dan Kanan ke Navigation Div Utama
         navigationDiv.add(leftPanel, BorderLayout.WEST);
