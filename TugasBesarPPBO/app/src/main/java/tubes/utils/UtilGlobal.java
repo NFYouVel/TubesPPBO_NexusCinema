@@ -19,7 +19,7 @@ public class UtilGlobal {
     }
 
     public static String getGlobalUUID() {
-        return "09fa69d5-6d5c-49c0-8e88-512f370b8911";
+        return globalUUID;
     }
 
     public static void setRole(Roles role) {
