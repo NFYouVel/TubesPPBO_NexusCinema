@@ -26,16 +26,18 @@ import javax.swing.border.EmptyBorder;
 import tubes.controllers.SeatController;
 import tubes.controllers.ShowTimeController;
 import tubes.controllers.TicketController;
+import tubes.models.Movie;
 import tubes.models.Seat;
 import tubes.models.ShowTime;
 import tubes.models.exceptions.EmptyListException;
 import tubes.models.interfaces.PageNavigator;
 import tubes.utils.UtilGlobal;
 import tubes.utils.UtilJavaSwing;
+import tubes.views.customers.BackgroundPanel;
+import tubes.views.customers.MoviesPanel;
 import tubes.views.customers.PaymentPanel;
 
-
-public class CustomerView implements PageNavigator{
+public class CustomerView implements PageNavigator {
 
     // Controller
     private final ShowTimeController showMoviesController;
@@ -92,7 +94,7 @@ public class CustomerView implements PageNavigator{
         backgroundCustomer.setLayout(new BorderLayout());
         setNavbarContent();
         setMainContent();
-        
+
         backgroundCustomer.add(navbarContent, BorderLayout.NORTH);
         backgroundCustomer.add(mainContent, BorderLayout.CENTER);
 
@@ -107,7 +109,7 @@ public class CustomerView implements PageNavigator{
         mainContent.add(paymentPage, "PAYMENT");
         mainContent.add(printTicketPage, "PRINT_TICKET");
         mainContent.add(historyPage, "HISTORY");
-        showPage("DEFAULT"); 
+        showPage("DEFAULT");
 
         handleNavigationActionButton();
 
@@ -143,7 +145,6 @@ public class CustomerView implements PageNavigator{
         navbarContent.add(Box.createHorizontalStrut(20));
         navbarContent.add(logoutButton);
 
-
         // Adding Navigation Bar Content
         frame.add(navbarContent, BorderLayout.CENTER);
     }
@@ -154,6 +155,7 @@ public class CustomerView implements PageNavigator{
             navbarContent.removeAll();
             navbarContent.add(moviesButton);
             navbarContent.add(historyButton);
+            navbarContent.add(logoutButton);
             navbarContent.revalidate();
             navbarContent.repaint();
 
@@ -162,15 +164,19 @@ public class CustomerView implements PageNavigator{
         });
 
         historyButton.addActionListener(e -> {
+            historyPage.removeAll();
+            clearFrameContent();
+
             JPanel historyContent = new HistoryTicketView(UtilGlobal.getGlobalUUID());
             historyPage.add(historyContent, BorderLayout.CENTER);
 
             navbarContent.removeAll();
             navbarContent.add(moviesButton);
+            navbarContent.add(historyButton);
+            navbarContent.add(logoutButton);
             navbarContent.revalidate();
             navbarContent.repaint();
 
-            clearFrameContent();
             showPage("HISTORY");
         });
 
@@ -198,6 +204,11 @@ public class CustomerView implements PageNavigator{
         cardLayout.show(mainContent, text);
     }
 
+    @Override
+    public void goToStudioTypePage(String moviesUUID) {
+        handleViewStudioTypeButton(moviesUUID);
+    }
+
     private void clearFrameContent() {
         frame.revalidate();
         frame.repaint();
@@ -205,81 +216,13 @@ public class CustomerView implements PageNavigator{
 
     // <------------------------------------------- HANDLE BUTTONS ------------------------------------------->
     private void handleMoviesButton() {
-        try {
-            showTimes = showMoviesController.callShowMoviesListAll();
-        } catch (EmptyListException e) {
-            System.out.println(e.getMessage());
-        }
-
-        JPanel moviesCards = new JPanel();
-        moviesCards.setOpaque(false);
-        moviesCards.setLayout(new BoxLayout(moviesCards, BoxLayout.X_AXIS));
-
-        for (ShowTime showTime : showTimes) {
-
-            // CARD WRAPPER
-            JPanel movieCard = new JPanel();
-            movieCard.setOpaque(false);
-            movieCard.setLayout(new BorderLayout());
-            movieCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-            // IMAGE
-            if (isImages) {
-                JLabel iconMovie = UtilJavaSwing.getMovieIconLabel(showTime.getMovie().getTitle());
-                movieCard.add(iconMovie, BorderLayout.NORTH);
-            }
-
-            // DETAILS PANEL
-            JPanel detailsMovie = new JPanel();
-            detailsMovie.setOpaque(false);
-            detailsMovie.setLayout(new BoxLayout(detailsMovie, BoxLayout.Y_AXIS));
-            detailsMovie.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-
-            JLabel title = new JLabel(showTime.getMovie().getTitle());
-            title.setFont(new Font("Arial", Font.BOLD, 24));
-
-            JLabel duration = new JLabel("Duration: " + showTime.getMovie().getDuration() + " mins");
-            JLabel genre = new JLabel("Genre: " + showTime.getMovie().getGenre());
-            JLabel ratings = new JLabel("Ratings: " + showTime.getMovie().getRating().name());
-
-            detailsMovie.add(title);
-            detailsMovie.add(genre);
-            detailsMovie.add(ratings);
-            detailsMovie.add(duration);
-
-            movieCard.add(detailsMovie, BorderLayout.CENTER);
-
-            // BUTTON
-            JButton viewStudioTypeButton = UtilJavaSwing.generateButton("View Studio Type");
-            viewStudioTypeButton.putClientProperty("movies_UUID", showTime.getMovie().getMoviesUUID());
-            viewStudioTypeButton.setPreferredSize(new Dimension(150, 40));
-
-            viewStudioTypeButton.addActionListener(e -> {
-                JButton clickedBtn = (JButton) e.getSource();
-                String movies_UUID = (String) clickedBtn.getClientProperty("movies_UUID");
-
-                clearFrameContent();
-                handleViewStudioTypeButton(movies_UUID);
-            });
-
-            JPanel btnPanel = new JPanel();
-            btnPanel.setOpaque(false);
-            btnPanel.add(viewStudioTypeButton);
-
-            movieCard.add(btnPanel, BorderLayout.SOUTH);
-
-            // ADD CARD TO PAGE
-            moviesCards.add(movieCard);
-        }
-
-        moviesPage = new JScrollPane(moviesCards);
-        moviesPage.setOpaque(false);
-        moviesPage.getViewport().setOpaque(false);
+        JPanel movieContent = new MoviesPanel(isImages, this);
+        moviesPage = new JScrollPane(movieContent);
     }
 
     private void handleViewStudioTypeButton(String moviesUUID) {
         showPage("MOVIES");
-
+        showTimes = new ArrayList<>();
         showTimePage.removeAll();
 
         try {

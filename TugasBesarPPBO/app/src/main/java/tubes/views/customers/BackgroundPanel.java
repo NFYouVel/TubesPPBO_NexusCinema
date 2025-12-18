@@ -1,4 +1,4 @@
-package tubes.views;
+package tubes.views.customers;
 
 import java.awt.Graphics;
 import java.awt.Image;
