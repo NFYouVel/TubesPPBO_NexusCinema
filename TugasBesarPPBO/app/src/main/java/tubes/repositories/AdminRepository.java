@@ -102,7 +102,6 @@ public class AdminRepository {
                 int newDuration = rsDurasi.getInt("duration");
                 LocalDateTime inputShowEnd = inputShowStart.plusMinutes(newDuration + 15); // 15 menit untuk cleaning
                                                                                            // studio
-
                 // check film sbelumnya selesai jam berapa
                 String sqlCheck = "SELECT st.show_time, m.duration FROM show_time st JOIN movies m ON st.movies_UUID = m.movies_UUID WHERE st.studio_UUID = ? AND st.deleted_at IS NULL";
                 PreparedStatement psCheck = conn.prepareStatement(sqlCheck);
@@ -169,7 +168,7 @@ public class AdminRepository {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Studio studio = new Studio(rs.getString("studio_number"), StudioTypes.valueOf(rs.getString("type")), rs.getInt("price"));
-                studio.setStudioUUID("studio_UUID");
+                studio.setStudioUUID(rs.getString("studio_UUID"));
                 studios.add(studio);
             }
             return studios;
